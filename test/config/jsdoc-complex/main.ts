@@ -17,6 +17,7 @@ export interface MyObject {
      * @maximum 10
      * @exclusiveMaximum true
      * @multipleOf 3
+     * @asType integer
      */
     numberValue: number;
 

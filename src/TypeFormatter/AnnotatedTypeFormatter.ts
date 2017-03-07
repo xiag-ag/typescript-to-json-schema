@@ -14,12 +14,12 @@ export class AnnotatedTypeFormatter implements SubTypeFormatter {
         return type instanceof AnnotatedType;
     }
     public getDefinition(type: AnnotatedType): Definition {
-        const def = {
+        const def: Definition = {
             ...this.childTypeFormatter.getDefinition(type.getType()),
             ...type.getAnnotations(),
         };
-        if (type.getComments()){
-            def['description'] = type.getComments().join(' ');
+        if (type.getComments()) {
+            (<any>def).description = type.getComments().join(" ");
         }
         return def;
     }

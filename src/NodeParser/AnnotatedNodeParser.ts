@@ -68,7 +68,7 @@ export class AnnotatedNodeParser implements SubNodeParser {
         if (!comments || !comments.length) {
             return undefined;
         }
-        return comments.map(comment=>comment.text);
+        return comments.map((comment: ts.SymbolDisplayPart) => comment.text);
     }
 
     private parseAnnotations(node: ts.Node): Annotations {

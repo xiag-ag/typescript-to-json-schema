@@ -8,7 +8,7 @@ export class AnnotatedType extends BaseType {
     public constructor(
         private type: BaseType,
         private annotations: Annotations,
-        private comments: string[]
+        private comments: string[],
     ) {
         super();
     }

@@ -16,11 +16,13 @@ export class SchemaGenerator {
     ) {
     }
 
-    public createSchemas(filter: (fileName: string)=>boolean): Map<Schema> {
+    public createSchemas(filter: (fileName: string) => boolean): Map<Schema> {
         const rootNodes: Map<ts.Node> = this.findRootNodes(filter);
         const schemas: Map<Schema> = {};
-        for(let name in rootNodes){
-            schemas[name] = this.createSchemaFromNode(rootNodes[name]);
+        for (let name in rootNodes) {
+            if (rootNodes.hasOwnProperty(name)) {
+                schemas[name] = this.createSchemaFromNode(rootNodes[name]);
+            }
         }
         return schemas;
     }
@@ -29,7 +31,7 @@ export class SchemaGenerator {
         return this.createSchemaFromNode(this.findRootNode(fullName));
     }
 
-    private createSchemaFromNode(node:ts.Node):Schema{
+    private createSchemaFromNode(node: ts.Node): Schema {
         const rootType: BaseType = this.nodeParser.createType(node, new Context());
 
         return {
@@ -40,7 +42,7 @@ export class SchemaGenerator {
     }
 
     private findRootNode(fullName: string): ts.Node {
-        const allTypes: Map<ts.Node> = this.findRootNodes((file)=>true);
+        const allTypes: Map<ts.Node> = this.findRootNodes((fileName: string) => true);
         const rootNode: ts.Node = allTypes[fullName];
         if (!rootNode) {
             throw new NoRootTypeError(fullName);
@@ -49,7 +51,7 @@ export class SchemaGenerator {
         return rootNode;
     }
 
-    private findRootNodes(filter: (fileName: string)=>boolean): Map<ts.Node>{
+    private findRootNodes(filter: (fileName: string) => boolean): Map<ts.Node> {
         const typeChecker: ts.TypeChecker = this.program.getTypeChecker();
         const allTypes: Map<ts.Node> = {};
 

@@ -60,7 +60,7 @@ describe("config", () => {
 
     assertSchema("jsdoc-complex", {type: "MyObject", expose: "export", topRef: true, jsDoc: true});
 
-    it("should find all schemas with 'createSchemas'", ()=>{
+    it("should find all schemas with 'createSchemas'", () => {
         const config: Config = {
             path: resolve(`${basePath}/find-schemas/main.ts`),
             type: undefined,
@@ -76,7 +76,7 @@ describe("config", () => {
             createFormatter(config),
         );
 
-        const schemas = generator.createSchemas((fileName: string)=> /main.ts$/.test(fileName));
-        assert.deepEqual(Object.keys(schemas), ['MyObject', 'MyString']);
+        const schemas: Map<Schema> = generator.createSchemas((fileName: string) => /main.ts$/.test(fileName));
+        assert.deepEqual(Object.keys(schemas), ["MyObject", "MyString"]);
     });
 });

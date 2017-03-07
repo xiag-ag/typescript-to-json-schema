@@ -42,7 +42,8 @@ export class AnnotatedNodeParser implements SubNodeParser {
     public createType(node: ts.Node, context: Context): BaseType {
         const baseType: BaseType = this.childNodeParser.createType(node, context);
         const annotations: Annotations = this.parseAnnotations(this.getAnnotatedNode(node));
-        return !annotations ? baseType : new AnnotatedType(baseType, annotations);
+        const comments: string[] = this.parseComments(this.getAnnotatedNode(node));
+        return !annotations && !comments ? baseType : new AnnotatedType(baseType, annotations, comments);
     }
 
     private getAnnotatedNode(node: ts.Node): ts.Node {
@@ -55,6 +56,19 @@ export class AnnotatedNodeParser implements SubNodeParser {
         } else {
             return node;
         }
+    }
+
+    private parseComments(node: ts.Node): string[] {
+        const symbol: ts.Symbol = (node as any).symbol;
+        if (!symbol) {
+            return undefined;
+        }
+
+        const comments: ts.SymbolDisplayPart[] = symbol.getDocumentationComment();
+        if (!comments || !comments.length) {
+            return undefined;
+        }
+        return comments.map(comment=>comment.text);
     }
 
     private parseAnnotations(node: ts.Node): Annotations {

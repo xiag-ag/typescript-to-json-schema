@@ -11,6 +11,8 @@ import { createFormatter } from "../factory/formatter";
 
 import { Config } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
+import { Schema } from "../src/Schema/Schema";
+import { Map } from "../src/Utils/Map";
 
 const validator: Ajv.Ajv = new Ajv();
 const basePath: string = "test/config";

@@ -35,7 +35,6 @@ export class SchemaGenerator {
             this.inspectNode(sourceFile, typeChecker, allTypes);
         });
 
-        const allTypes: Map<ts.Node> = this.findRootNodes((file)=>true);
         const rootNode: ts.Node = allTypes[fullName];
         if (!rootNode) {
             throw new NoRootTypeError(fullName);

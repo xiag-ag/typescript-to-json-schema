@@ -7,7 +7,7 @@ export interface Annotations {
 export class AnnotatedType extends BaseType {
     public constructor(
         private type: BaseType,
-        private annotations: Annotations
+        private annotations: Annotations,
     ) {
         super();
     }

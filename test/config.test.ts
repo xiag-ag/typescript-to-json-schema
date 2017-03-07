@@ -59,4 +59,24 @@ describe("config", () => {
     assertSchema("expose-export-topref-false", {type: "MyObject", expose: "export", topRef: false, jsDoc: false});
 
     assertSchema("jsdoc-complex", {type: "MyObject", expose: "export", topRef: true, jsDoc: true});
+
+    it("should find all schemas with 'createSchemas'", ()=>{
+        const config: Config = {
+            path: resolve(`${basePath}/jsdoc-complex/main.ts`),
+            type: undefined,
+            expose: "export",
+            topRef: true,
+            jsDoc: false,
+        };
+
+        const program: ts.Program = createProgram(config);
+        const generator: SchemaGenerator = new SchemaGenerator(
+            program,
+            createParser(program, config),
+            createFormatter(config),
+        );
+
+        const schemas = generator.createSchemas((fileName:string)=>fileName.substring(fileName.length-7)==='main.ts');
+        assert.deepEqual(Object.keys(schemas), ['MyObject','MyExportString']);
+    });
 });

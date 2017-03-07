@@ -62,7 +62,7 @@ describe("config", () => {
 
     it("should find all schemas with 'createSchemas'", ()=>{
         const config: Config = {
-            path: resolve(`${basePath}/jsdoc-complex/main.ts`),
+            path: resolve(`${basePath}/find-schemas/main.ts`),
             type: undefined,
             expose: "export",
             topRef: true,
@@ -76,7 +76,7 @@ describe("config", () => {
             createFormatter(config),
         );
 
-        const schemas = generator.createSchemas((fileName:string)=>fileName.substring(fileName.length-7)==='main.ts');
-        assert.deepEqual(Object.keys(schemas), ['MyObject','MyExportString']);
+        const schemas = generator.createSchemas((fileName: string)=> /main.ts$/.test(fileName));
+        assert.deepEqual(Object.keys(schemas), ['MyObject', 'MyString']);
     });
 });

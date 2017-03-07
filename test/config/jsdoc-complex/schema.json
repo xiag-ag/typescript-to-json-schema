@@ -7,7 +7,6 @@
                 "stringValue": {
                     "type": "string",
                     "title": "String field title",
-                    "description": "Free text.",
                     "minLength": 10,
                     "format": "date-time",
                     "pattern": "/^\\d+$/"

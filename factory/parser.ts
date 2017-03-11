@@ -9,6 +9,8 @@ import { CircularReferenceNodeParser } from "../src/CircularReferenceNodeParser"
 import { ExposeNodeParser } from "../src/ExposeNodeParser";
 import { TopRefNodeParser } from "../src/TopRefNodeParser";
 
+import { DefaultAnnotationsReader } from "../src/AnnotationsReader/DefaultAnnotationsReader";
+
 import { AnnotatedNodeParser } from "../src/NodeParser/AnnotatedNodeParser";
 
 import { StringTypeNodeParser } from "../src/NodeParser/StringTypeNodeParser";
@@ -50,7 +52,11 @@ export function createParser(program: ts.Program, config: Config): NodeParser {
         return new TopRefNodeParser(chainNodeParser, config.type, config.topRef);
     }
     function withJsDoc(nodeParser: SubNodeParser): SubNodeParser {
-        return config.jsDoc ? new AnnotatedNodeParser(nodeParser) : nodeParser;
+        if (config.jsDoc) {
+            return new AnnotatedNodeParser(nodeParser, new DefaultAnnotationsReader());
+        } else {
+            return nodeParser;
+        }
     }
     function withCircular(nodeParser: SubNodeParser): SubNodeParser {
         return new CircularReferenceNodeParser(nodeParser);

@@ -11,6 +11,8 @@ import { createFormatter } from "../factory/formatter";
 
 import { Config } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
+import { Schema } from "../src/Schema/Schema";
+import { Map } from "../src/Utils/Map";
 
 const validator: Ajv.Ajv = new Ajv();
 const basePath: string = "test/config";
@@ -59,4 +61,24 @@ describe("config", () => {
     assertSchema("expose-export-topref-false", {type: "MyObject", expose: "export", topRef: false, jsDoc: false});
 
     assertSchema("jsdoc-complex", {type: "MyObject", expose: "export", topRef: true, jsDoc: true});
+
+    it("should find all schemas with 'createSchemas'", () => {
+        const config: Config = {
+            path: resolve(`${basePath}/find-schemas/main.ts`),
+            type: undefined,
+            expose: "export",
+            topRef: true,
+            jsDoc: false,
+        };
+
+        const program: ts.Program = createProgram(config);
+        const generator: SchemaGenerator = new SchemaGenerator(
+            program,
+            createParser(program, config),
+            createFormatter(config),
+        );
+
+        const schemas: Map<Schema> = generator.createSchemas((fileName: string) => /main.ts$/.test(fileName));
+        assert.deepEqual(Object.keys(schemas), ["MyObject", "MyString"]);
+    });
 });

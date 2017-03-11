@@ -16,9 +16,23 @@ export class SchemaGenerator {
     ) {
     }
 
+    public createSchemas(filter: (fileName: string) => boolean): Map<Schema> {
+        const rootNodes: Map<ts.Node> = this.findRootNodes(filter);
+        const schemas: Map<Schema> = {};
+        for (let name in rootNodes) {
+            if (rootNodes.hasOwnProperty(name)) {
+                schemas[name] = this.createSchemaFromNode(rootNodes[name]);
+            }
+        }
+        return schemas;
+    }
+
     public createSchema(fullName: string): Schema {
-        const rootNode: ts.Node = this.findRootNode(fullName);
-        const rootType: BaseType = this.nodeParser.createType(rootNode, new Context());
+        return this.createSchemaFromNode(this.findRootNode(fullName));
+    }
+
+    private createSchemaFromNode(node: ts.Node): Schema {
+        const rootType: BaseType = this.nodeParser.createType(node, new Context());
 
         return {
             $schema: "http://json-schema.org/draft-04/schema#",
@@ -28,13 +42,7 @@ export class SchemaGenerator {
     }
 
     private findRootNode(fullName: string): ts.Node {
-        const typeChecker: ts.TypeChecker = this.program.getTypeChecker();
-        const allTypes: Map<ts.Node> = {};
-
-        this.program.getSourceFiles().forEach((sourceFile: ts.SourceFile) => {
-            this.inspectNode(sourceFile, typeChecker, allTypes);
-        });
-
+        const allTypes: Map<ts.Node> = this.findRootNodes((fileName: string) => true);
         const rootNode: ts.Node = allTypes[fullName];
         if (!rootNode) {
             throw new NoRootTypeError(fullName);
@@ -42,6 +50,20 @@ export class SchemaGenerator {
 
         return rootNode;
     }
+
+    private findRootNodes(filter: (fileName: string) => boolean): Map<ts.Node> {
+        const typeChecker: ts.TypeChecker = this.program.getTypeChecker();
+        const allTypes: Map<ts.Node> = {};
+
+        this.program.getSourceFiles().forEach((sourceFile: ts.SourceFile) => {
+            if (filter(sourceFile.fileName)) {
+                this.inspectNode(sourceFile, typeChecker, allTypes);
+            }
+        });
+
+        return allTypes;
+    }
+
     private inspectNode(node: ts.Node, typeChecker: ts.TypeChecker, allTypes: Map<ts.Node>): void {
         if (
             node.kind === ts.SyntaxKind.InterfaceDeclaration ||

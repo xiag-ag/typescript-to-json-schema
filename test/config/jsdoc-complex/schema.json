@@ -12,7 +12,7 @@
                     "pattern": "/^\\d+$/"
                 },
                 "numberValue": {
-                    "type": "number",
+                    "type": "integer",
                     "title": "Number field title",
                     "maximum": 10,
                     "exclusiveMaximum": true,

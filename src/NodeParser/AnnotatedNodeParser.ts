@@ -11,6 +11,7 @@ export class AnnotatedNodeParser implements SubNodeParser {
 
         "format",
         "pattern",
+        "asType",
     ];
     private static jsonTags: string[] = [
         "minimum",
@@ -71,7 +72,8 @@ export class AnnotatedNodeParser implements SubNodeParser {
         const annotations: Annotations = jsDocTags.reduce((result: Annotations, jsDocTag: ts.JSDocTagInfo) => {
             const value: any = this.parseJsDocTag(jsDocTag);
             if (value !== undefined) {
-                result[jsDocTag.name] = value;
+                let name: string = jsDocTag.name === "asType" ? "type" : jsDocTag.name;
+                result[name] = value;
             }
 
             return result;

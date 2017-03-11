@@ -36,6 +36,7 @@ export * from "./src/Type/AnnotatedType";
 
 export * from "./src/AnnotationsReader";
 export * from "./src/AnnotationsReader/DefaultAnnotationsReader";
+export * from "./src/AnnotationsReader/ExtendedAnnotationsReader";
 
 export * from "./src/TypeFormatter";
 export * from "./src/SubTypeFormatter";

@@ -4,6 +4,8 @@
  */
 export interface MyObject {
     /**
+     * Free text.
+     *
      * @title String field title
      * @minLength 10
      * @format date-time

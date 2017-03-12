@@ -36,6 +36,6 @@ export class ExtendedAnnotationsReader extends DefaultAnnotationsReader {
             return undefined;
         }
 
-        return jsDocTag ? {type: jsDocTag.text} : undefined;
+        return {type: jsDocTag.text};
     }
 }

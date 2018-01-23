@@ -14,25 +14,25 @@ export class ExpressionWithTypeArgumentsNodeParser implements SubNodeParser {
         return node.kind === ts.SyntaxKind.ExpressionWithTypeArguments;
     }
     public createType(node: ts.ExpressionWithTypeArguments, context: Context): BaseType {
-        const typeSymbol: ts.Symbol = this.typeChecker.getSymbolAtLocation(node.expression);
+        const typeSymbol = this.typeChecker.getSymbolAtLocation(node.expression)!;
         if (typeSymbol.flags & ts.SymbolFlags.Alias) {
-            const aliasedSymbol: ts.Symbol = this.typeChecker.getAliasedSymbol(typeSymbol);
+            const aliasedSymbol = this.typeChecker.getAliasedSymbol(typeSymbol);
             return this.childNodeParser.createType(
-                aliasedSymbol.declarations[0],
+                aliasedSymbol.declarations![0],
                 this.createSubContext(node, context),
             );
         } else if (typeSymbol.flags & ts.SymbolFlags.TypeParameter) {
             return context.getArgument(typeSymbol.name);
         } else {
             return this.childNodeParser.createType(
-                typeSymbol.declarations[0],
+                typeSymbol.declarations![0],
                 this.createSubContext(node, context),
             );
         }
     }
 
     private createSubContext(node: ts.ExpressionWithTypeArguments, parentContext: Context): Context {
-        const subContext: Context = new Context(node);
+        const subContext = new Context(node);
         if (node.typeArguments && node.typeArguments.length) {
             node.typeArguments.forEach((typeArg: ts.TypeNode) => {
                 subContext.pushArgument(this.childNodeParser.createType(typeArg, parentContext));

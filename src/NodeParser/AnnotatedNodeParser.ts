@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import { Context } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
-import { AnnotatedType, Annotations } from "../Type/AnnotatedType";
+import { AnnotatedType } from "../Type/AnnotatedType";
 import { AnnotationsReader } from "../AnnotationsReader";
 
 export class AnnotatedNodeParser implements SubNodeParser {
@@ -16,8 +16,8 @@ export class AnnotatedNodeParser implements SubNodeParser {
         return this.childNodeParser.supportsNode(node);
     }
     public createType(node: ts.Node, context: Context): BaseType {
-        const baseType: BaseType = this.childNodeParser.createType(node, context);
-        const annotations: Annotations = this.annotationsReader.getAnnotations(this.getAnnotatedNode(node));
+        const baseType = this.childNodeParser.createType(node, context);
+        const annotations = this.annotationsReader.getAnnotations(this.getAnnotatedNode(node));
         return !annotations ? baseType : new AnnotatedType(baseType, annotations);
     }
 

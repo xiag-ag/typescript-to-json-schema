@@ -3,6 +3,7 @@ import { NodeParser, Context } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { ObjectType, ObjectProperty } from "../Type/ObjectType";
+import { symbolAtNode } from "../Utils/symbolAtNode";
 
 export class InterfaceNodeParser implements SubNodeParser {
     public constructor(
@@ -17,7 +18,7 @@ export class InterfaceNodeParser implements SubNodeParser {
     public createType(node: ts.InterfaceDeclaration, context: Context): BaseType {
         if (node.typeParameters && node.typeParameters.length) {
             node.typeParameters.forEach((typeParam: ts.TypeParameterDeclaration) => {
-                const nameSymbol: ts.Symbol = this.typeChecker.getSymbolAtLocation(typeParam.name);
+                const nameSymbol = this.typeChecker.getSymbolAtLocation(typeParam.name)!;
                 context.pushParameter(nameSymbol.name);
             });
         }
@@ -46,10 +47,10 @@ export class InterfaceNodeParser implements SubNodeParser {
         return node.members
             .filter((property: ts.TypeElement) => property.kind === ts.SyntaxKind.PropertySignature)
             .reduce((result: ObjectProperty[], propertyNode: ts.PropertySignature) => {
-                const propertySymbol: ts.Symbol = (propertyNode as any).symbol;
-                const objectProperty: ObjectProperty = new ObjectProperty(
+                const propertySymbol = symbolAtNode(propertyNode)!;
+                const objectProperty = new ObjectProperty(
                     propertySymbol.getName(),
-                    this.childNodeParser.createType(propertyNode.type, context),
+                    this.childNodeParser.createType(propertyNode.type!, context),
                     !propertyNode.questionToken,
                 );
 
@@ -58,20 +59,20 @@ export class InterfaceNodeParser implements SubNodeParser {
             }, []);
     }
 
-    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType|boolean {
-        const properties: ts.TypeElement[] = node.members
+    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType | false {
+        const properties = node.members
             .filter((property: ts.TypeElement) => property.kind === ts.SyntaxKind.IndexSignature);
         if (!properties.length) {
             return false;
         }
 
-        const signature: ts.IndexSignatureDeclaration = properties[0] as ts.IndexSignatureDeclaration;
-        return this.childNodeParser.createType(signature.type, context);
+        const signature = properties[0] as ts.IndexSignatureDeclaration;
+        return this.childNodeParser.createType(signature.type!, context);
     }
 
     private getTypeId(node: ts.Node, context: Context): string {
-        const fullName: string = `interface-${node.getFullStart()}`;
-        const argumentIds: string[] = context.getArguments().map((arg: BaseType) => arg.getId());
+        const fullName = `interface-${node.getFullStart()}`;
+        const argumentIds = context.getArguments().map((arg: BaseType) => arg.getId());
 
         return argumentIds.length ? `${fullName}<${argumentIds.join(",")}>` : fullName;
     }

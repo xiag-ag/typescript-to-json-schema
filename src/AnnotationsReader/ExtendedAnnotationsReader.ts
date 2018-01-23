@@ -1,9 +1,10 @@
 import * as ts from "typescript";
 import { Annotations } from "../Type/AnnotatedType";
-import { DefaultAnnotationsReader } from "./DefaultAnnotationsReader";
+import { BasicAnnotationsReader } from "./BasicAnnotationsReader";
+import { symbolAtNode } from "../Utils/symbolAtNode";
 
-export class ExtendedAnnotationsReader extends DefaultAnnotationsReader {
-    public getAnnotations(node: ts.Node): Annotations {
+export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
+    public getAnnotations(node: ts.Node): Annotations | undefined {
         const annotations: Annotations = {
             ...this.getDescriptionAnnotation(node),
             ...this.getTypeAnnotation(node),
@@ -12,31 +13,31 @@ export class ExtendedAnnotationsReader extends DefaultAnnotationsReader {
         return Object.keys(annotations).length ? annotations : undefined;
     }
 
-    private getDescriptionAnnotation(node: ts.Node): Annotations {
-        const symbol: ts.Symbol = (node as any).symbol;
+    private getDescriptionAnnotation(node: ts.Node): Annotations | undefined {
+        const symbol = symbolAtNode(node);
         if (!symbol) {
             return undefined;
         }
 
-        const comments: ts.SymbolDisplayPart[] = symbol.getDocumentationComment();
+        const comments = symbol.getDocumentationComment();
         if (!comments || !comments.length) {
             return undefined;
         }
 
         return {description: comments.map((comment: ts.SymbolDisplayPart) => comment.text).join(" ")};
     }
-    private getTypeAnnotation(node: ts.Node): Annotations {
-        const symbol: ts.Symbol = (node as any).symbol;
+    private getTypeAnnotation(node: ts.Node): Annotations | undefined {
+        const symbol = symbolAtNode(node);
         if (!symbol) {
             return undefined;
         }
 
-        const jsDocTags: ts.JSDocTagInfo[] = symbol.getJsDocTags();
+        const jsDocTags = symbol.getJsDocTags();
         if (!jsDocTags || !jsDocTags.length) {
             return undefined;
         }
 
-        const jsDocTag: ts.JSDocTagInfo = jsDocTags.find((tag: ts.JSDocTagInfo) => tag.name === "asType");
+        const jsDocTag = jsDocTags.find((tag: ts.JSDocTagInfo) => tag.name === "asType");
         if (!jsDocTag || !jsDocTag.text) {
             return undefined;
         }

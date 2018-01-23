@@ -14,14 +14,13 @@ export class TupleTypeFormatter implements SubTypeFormatter {
         return type instanceof TupleType;
     }
     public getDefinition(type: TupleType): Definition {
-        const tupleDefinitions: Definition[] = type.getTypes()
-            .map((item: BaseType) => this.childTypeFormatter.getDefinition(item));
+        const tupleDefinitions = type.getTypes().map((item: BaseType) => this.childTypeFormatter.getDefinition(item));
 
         return {
             type: "array",
             items: tupleDefinitions,
             minItems: tupleDefinitions.length,
-            additionalItems: {anyOf: tupleDefinitions},
+            ...(tupleDefinitions.length > 1 ? {additionalItems: {anyOf: tupleDefinitions}} : {}),
         };
     }
     public getChildren(type: TupleType): BaseType[] {

@@ -1,8 +1,9 @@
 import * as ts from "typescript";
 import { Annotations } from "../Type/AnnotatedType";
 import { AnnotationsReader } from "../AnnotationsReader";
+import { symbolAtNode } from "../Utils/symbolAtNode";
 
-export class DefaultAnnotationsReader implements AnnotationsReader {
+export class BasicAnnotationsReader implements AnnotationsReader {
     private static textTags: string[] = [
         "title",
         "description",
@@ -29,19 +30,19 @@ export class DefaultAnnotationsReader implements AnnotationsReader {
         "default",
     ];
 
-    public getAnnotations(node: ts.Node): Annotations {
-        const symbol: ts.Symbol = (node as any).symbol;
+    public getAnnotations(node: ts.Node): Annotations | undefined {
+        const symbol = symbolAtNode(node);
         if (!symbol) {
             return undefined;
         }
 
-        const jsDocTags: ts.JSDocTagInfo[] = symbol.getJsDocTags();
+        const jsDocTags = symbol.getJsDocTags();
         if (!jsDocTags || !jsDocTags.length) {
             return undefined;
         }
 
-        const annotations: Annotations = jsDocTags.reduce((result: Annotations, jsDocTag: ts.JSDocTagInfo) => {
-            const value: any = this.parseJsDocTag(jsDocTag);
+        const annotations = jsDocTags.reduce((result: Annotations, jsDocTag: ts.JSDocTagInfo) => {
+            const value = this.parseJsDocTag(jsDocTag);
             if (value !== undefined) {
                 result[jsDocTag.name] = value;
             }
@@ -56,9 +57,9 @@ export class DefaultAnnotationsReader implements AnnotationsReader {
             return undefined;
         }
 
-        if (DefaultAnnotationsReader.textTags.indexOf(jsDocTag.name) >= 0) {
+        if (BasicAnnotationsReader.textTags.indexOf(jsDocTag.name) >= 0) {
             return jsDocTag.text;
-        } else if (DefaultAnnotationsReader.jsonTags.indexOf(jsDocTag.name) >= 0) {
+        } else if (BasicAnnotationsReader.jsonTags.indexOf(jsDocTag.name) >= 0) {
             return this.parseJson(jsDocTag.text);
         } else {
             return undefined;

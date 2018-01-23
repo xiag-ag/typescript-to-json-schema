@@ -16,7 +16,7 @@ export class ExposeNodeParser implements SubNodeParser {
         return this.subNodeParser.supportsNode(node);
     }
     public createType(node: ts.Node, context: Context): BaseType {
-        const baseType: BaseType = this.subNodeParser.createType(node, context);
+        const baseType = this.subNodeParser.createType(node, context);
         if (!this.isExportNode(node)) {
             return baseType;
         }

@@ -18,7 +18,7 @@ export class Context {
     }
 
     public getArgument(parameterName: string): BaseType {
-        const index: number = this.parameters.indexOf(parameterName);
+        const index = this.parameters.indexOf(parameterName);
         if (index < 0 || !this.arguments[index]) {
             throw new Error(`Could not find type parameter "${parameterName}"`);
         }

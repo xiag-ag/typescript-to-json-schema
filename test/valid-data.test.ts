@@ -96,10 +96,18 @@ describe("valid-data", () => {
 
     assertSchema("type-typeof", "MyType");
     assertSchema("type-typeof-value", "MyType");
-    assertSchema("type-indexed-access", "MyType");
-    assertSchema("type-keyof", "MyType");
-    assertSchema("type-mapped", "MyObject");
-
+    assertSchema("type-indexed-access-tuple-1", "MyType");
+    assertSchema("type-indexed-access-tuple-2", "MyType");
+    assertSchema("type-indexed-access-object-1", "MyType");
+    assertSchema("type-indexed-access-object-2", "MyType");
+    assertSchema("type-keyof-tuple", "MyType");
+    assertSchema("type-keyof-object", "MyType");
+    assertSchema("type-mapped-simple", "MyObject");
+    assertSchema("type-mapped-index", "MyObject");
+    assertSchema("type-mapped-literal", "MyObject");
+    assertSchema("type-mapped-generic", "MyObject");
+    assertSchema("type-mapped-native", "MyObject");
+    //
     assertSchema("generic-simple", "MyObject");
     assertSchema("generic-arrays", "MyObject");
     assertSchema("generic-multiple", "MyObject");

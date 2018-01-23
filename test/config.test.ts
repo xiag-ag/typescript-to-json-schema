@@ -2,39 +2,36 @@ import * as Ajv from "ajv";
 import { assert } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import * as ts from "typescript";
 
 import { createFormatter } from "../factory/formatter";
 import { createParser } from "../factory/parser";
 import { createProgram } from "../factory/program";
 import { Config, DEFAULT_CONFIG, PartialConfig } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
-import { Run } from "./valid-data.test";
 
-const validator: Ajv.Ajv = new Ajv();
-const metaSchema: object = require("ajv/lib/refs/json-schema-draft-04.json");
+const validator = new Ajv();
+const metaSchema = require("ajv/lib/refs/json-schema-draft-04.json");
 validator.addMetaSchema(metaSchema, "http://json-schema.org/draft-04/schema#");
 
-const basePath = "test/config";
-
-function assertSchema(name: string, partialConfig: PartialConfig & {type: string}, only: Boolean = false): void {
-    const run: Run = only ? it.only : it;
-    run(name, () => {
+type TestConfig = Partial<PartialConfig> & {type: string};
+function assertSchema(name: string, testConfig: TestConfig): void {
+    it(name, () => {
+        const basePath = "test/config";
         const config: Config = {
             ... DEFAULT_CONFIG,
-            ...partialConfig,
+            ...testConfig,
             path: resolve(`${basePath}/${name}/*.ts`),
         };
 
-        const program: ts.Program = createProgram(config);
-        const generator: SchemaGenerator = new SchemaGenerator(
+        const program = createProgram(config);
+        const generator = new SchemaGenerator(
             program,
             createParser(program, config),
             createFormatter(config),
         );
 
-        const expected: any = JSON.parse(readFileSync(resolve(`${basePath}/${name}/schema.json`), "utf8"));
-        const actual: any = JSON.parse(JSON.stringify(generator.createSchema(config.type)));
+        const expected = JSON.parse(readFileSync(resolve(`${basePath}/${name}/schema.json`), "utf8"));
+        const actual = JSON.parse(JSON.stringify(generator.createSchema(config.type)));
 
         assert.isObject(actual);
         assert.deepEqual(actual, expected);

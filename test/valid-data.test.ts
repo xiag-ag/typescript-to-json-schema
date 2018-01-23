@@ -2,27 +2,19 @@ import * as Ajv from "ajv";
 import { assert } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import * as ts from "typescript";
 import { createFormatter } from "../factory/formatter";
 import { createParser } from "../factory/parser";
 import { createProgram } from "../factory/program";
 import { Config } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
 
-const validator: Ajv.Ajv = new Ajv();
-const metaSchema: object = require("ajv/lib/refs/json-schema-draft-04.json");
+const validator = new Ajv();
+const metaSchema = require("ajv/lib/refs/json-schema-draft-04.json");
 validator.addMetaSchema(metaSchema, "http://json-schema.org/draft-04/schema#");
 
-const basePath = "test/valid-data";
-
-export type Run = (
-        expectation: string,
-        callback?: ((this: Mocha.ITestCallbackContext, done: MochaDone) => any) | undefined,
-    ) => Mocha.ITest;
-
-function assertSchema(name: string, type: string, only: boolean = false): void {
-    const run: Run = only ? it.only : it;
-    run(name, () => {
+function assertSchema(name: string, type: string): void {
+    it(name, () => {
+        const basePath = "test/valid-data";
         const config: Config = {
             path: resolve(`${basePath}/${name}/*.ts`),
             type: type,
@@ -30,17 +22,18 @@ function assertSchema(name: string, type: string, only: boolean = false): void {
             expose: "export",
             topRef: true,
             jsDoc: "none",
+            sortProps: true,
         };
 
-        const program: ts.Program = createProgram(config);
-        const generator: SchemaGenerator = new SchemaGenerator(
+        const program = createProgram(config);
+        const generator = new SchemaGenerator(
             program,
             createParser(program, config),
             createFormatter(config),
         );
 
-        const expected: any = JSON.parse(readFileSync(resolve(`${basePath}/${name}/schema.json`), "utf8"));
-        const actual: any = JSON.parse(JSON.stringify(generator.createSchema(type)));
+        const expected = JSON.parse(readFileSync(resolve(`${basePath}/${name}/schema.json`), "utf8"));
+        const actual = JSON.parse(JSON.stringify(generator.createSchema(type)));
 
         assert.isObject(actual);
         assert.deepEqual(actual, expected);

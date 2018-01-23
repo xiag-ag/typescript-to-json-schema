@@ -2,6 +2,7 @@ import * as ts from "typescript";
 import { Context, NodeParser } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
+import { LogicError } from "../Error/LogicError";
 
 export class TypeofNodeParser implements SubNodeParser {
     public constructor(
@@ -16,8 +17,14 @@ export class TypeofNodeParser implements SubNodeParser {
 
     public createType(node: ts.TypeQueryNode, context: Context): BaseType {
         const symbol = this.typeChecker.getSymbolAtLocation(node.exprName)!;
-        const valueDec = symbol.valueDeclaration!;
+        const valueDec = symbol.valueDeclaration! as ts.VariableDeclaration;
 
-        return this.childNodeParser.createType(valueDec.type ? valueDec.type : valueDec.initializer, context);
+        if (valueDec.type) {
+            return this.childNodeParser.createType(valueDec.type, context);
+        } else if (valueDec.initializer) {
+            return this.childNodeParser.createType(valueDec.initializer, context);
+        } else {
+            throw new LogicError(`Invalid type query "${valueDec.getFullText()}"`);
+        }
     }
 }

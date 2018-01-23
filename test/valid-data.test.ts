@@ -1,22 +1,28 @@
 import * as Ajv from "ajv";
-import * as ts from "typescript";
-
 import { assert } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-
-import { createProgram } from "../factory/program";
-import { createParser } from "../factory/parser";
+import * as ts from "typescript";
 import { createFormatter } from "../factory/formatter";
-
+import { createParser } from "../factory/parser";
+import { createProgram } from "../factory/program";
 import { Config } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
 
 const validator: Ajv.Ajv = new Ajv();
-const basePath: string = "test/valid-data";
+const metaSchema: object = require("ajv/lib/refs/json-schema-draft-04.json");
+validator.addMetaSchema(metaSchema, "http://json-schema.org/draft-04/schema#");
 
-function assertSchema(name: string, type: string): void {
-    it(name, () => {
+const basePath = "test/valid-data";
+
+export type Run = (
+        expectation: string,
+        callback?: ((this: Mocha.ITestCallbackContext, done: MochaDone) => any) | undefined,
+    ) => Mocha.ITest;
+
+function assertSchema(name: string, type: string, only: boolean = false): void {
+    const run: Run = only ? it.only : it;
+    run(name, () => {
         const config: Config = {
             path: resolve(`${basePath}/${name}/*.ts`),
             type: type,
@@ -46,8 +52,6 @@ function assertSchema(name: string, type: string): void {
 
 describe("valid-data", () => {
     // TODO: generics recursive
-    // TODO: literals unions
-    // TODO: typeof support
 
     assertSchema("simple-object", "SimpleObject");
 
@@ -66,6 +70,11 @@ describe("valid-data", () => {
     assertSchema("enums-initialized", "Enum");
     assertSchema("enums-compute", "Enum");
     assertSchema("enums-mixed", "Enum");
+    assertSchema("enums-member", "MyObject");
+
+    assertSchema("string-literals", "MyObject");
+    assertSchema("string-literals-inline", "MyObject");
+    assertSchema("string-literals-null", "MyObject");
 
     assertSchema("namespace-deep-1", "RootNamespace.Def");
     assertSchema("namespace-deep-2", "RootNamespace.SubNamespace.HelperA");
@@ -90,6 +99,13 @@ describe("valid-data", () => {
     assertSchema("type-union", "TypeUnion");
     assertSchema("type-union-tagged", "Shape");
     assertSchema("type-intersection", "MyObject");
+    assertSchema("type-intersection-additional-props", "MyObject");
+
+    assertSchema("type-typeof", "MyType");
+    assertSchema("type-typeof-value", "MyType");
+    assertSchema("type-indexed-access", "MyType");
+    assertSchema("type-keyof", "MyType");
+    assertSchema("type-mapped", "MyObject");
 
     assertSchema("generic-simple", "MyObject");
     assertSchema("generic-arrays", "MyObject");
@@ -98,4 +114,6 @@ describe("valid-data", () => {
     assertSchema("generic-anonymous", "MyObject");
     assertSchema("generic-recursive", "MyObject");
     assertSchema("generic-hell", "MyObject");
+
+    assertSchema("nullable-null", "MyObject");
 });

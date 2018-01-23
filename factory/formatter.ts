@@ -31,9 +31,8 @@ import { UnionTypeFormatter } from "../src/TypeFormatter/UnionTypeFormatter";
 import { IntersectionTypeFormatter } from "../src/TypeFormatter/IntersectionTypeFormatter";
 
 export function createFormatter(config: Config): TypeFormatter {
-    const chainTypeFormatter: ChainTypeFormatter = new ChainTypeFormatter([]);
-    const circularReferenceTypeFormatter: CircularReferenceTypeFormatter =
-        new CircularReferenceTypeFormatter(chainTypeFormatter);
+    const chainTypeFormatter = new ChainTypeFormatter([]);
+    const circularReferenceTypeFormatter = new CircularReferenceTypeFormatter(chainTypeFormatter);
 
     chainTypeFormatter
         .addTypeFormatter(new AnnotatedTypeFormatter(circularReferenceTypeFormatter))

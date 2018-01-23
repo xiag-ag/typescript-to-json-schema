@@ -4,7 +4,7 @@ import { BaseType } from "./Type/BaseType";
 export class Context {
     private arguments: BaseType[] = [];
     private parameters: string[] = [];
-    private reference: ts.Node;
+    private reference?: ts.Node;
 
     public constructor(reference?: ts.Node) {
         this.reference = reference;
@@ -20,7 +20,7 @@ export class Context {
     public getArgument(parameterName: string): BaseType {
         const index: number = this.parameters.indexOf(parameterName);
         if (index < 0 || !this.arguments[index]) {
-            throw new Error(`Could not found type parameter "${parameterName}"`);
+            throw new Error(`Could not find type parameter "${parameterName}"`);
         }
 
         return this.arguments[index];
@@ -29,7 +29,7 @@ export class Context {
         return this.arguments;
     }
 
-    public getReference(): ts.Node {
+    public getReference(): ts.Node | undefined {
         return this.reference;
     }
 }

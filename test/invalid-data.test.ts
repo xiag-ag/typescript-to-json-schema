@@ -1,16 +1,13 @@
-import * as ts from "typescript";
-
 import { assert } from "chai";
 import { resolve } from "path";
-
-import { createProgram } from "../factory/program";
-import { createParser } from "../factory/parser";
+import * as ts from "typescript";
 import { createFormatter } from "../factory/formatter";
-
+import { createParser } from "../factory/parser";
+import { createProgram } from "../factory/program";
 import { Config } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
 
-const basePath: string = "test/invalid-data";
+const basePath = "test/invalid-data";
 
 function assertSchema(name: string, type: string): void {
     it(name, () => {
@@ -37,6 +34,5 @@ function assertSchema(name: string, type: string): void {
 describe("invalid-data", () => {
     // TODO: template recursive
 
-    assertSchema("type-typeof", "MyType");
     assertSchema("script-empty", "MyType");
 });

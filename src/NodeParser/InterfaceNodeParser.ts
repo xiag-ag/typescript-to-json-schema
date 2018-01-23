@@ -17,7 +17,7 @@ export class InterfaceNodeParser implements SubNodeParser {
     public createType(node: ts.InterfaceDeclaration, context: Context): BaseType {
         if (node.typeParameters && node.typeParameters.length) {
             node.typeParameters.forEach((typeParam: ts.TypeParameterDeclaration) => {
-                const nameSymbol: ts.Symbol = this.typeChecker.getSymbolAtLocation(typeParam.name);
+                const nameSymbol = this.typeChecker.getSymbolAtLocation(typeParam.name)!;
                 context.pushParameter(nameSymbol.name);
             });
         }
@@ -49,7 +49,7 @@ export class InterfaceNodeParser implements SubNodeParser {
                 const propertySymbol: ts.Symbol = (propertyNode as any).symbol;
                 const objectProperty: ObjectProperty = new ObjectProperty(
                     propertySymbol.getName(),
-                    this.childNodeParser.createType(propertyNode.type, context),
+                    this.childNodeParser.createType(propertyNode.type!, context),
                     !propertyNode.questionToken,
                 );
 
@@ -58,20 +58,20 @@ export class InterfaceNodeParser implements SubNodeParser {
             }, []);
     }
 
-    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType|boolean {
-        const properties: ts.TypeElement[] = node.members
+    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType | false {
+        const properties = node.members
             .filter((property: ts.TypeElement) => property.kind === ts.SyntaxKind.IndexSignature);
         if (!properties.length) {
             return false;
         }
 
         const signature: ts.IndexSignatureDeclaration = properties[0] as ts.IndexSignatureDeclaration;
-        return this.childNodeParser.createType(signature.type, context);
+        return this.childNodeParser.createType(signature.type!, context);
     }
 
     private getTypeId(node: ts.Node, context: Context): string {
-        const fullName: string = `interface-${node.getFullStart()}`;
-        const argumentIds: string[] = context.getArguments().map((arg: BaseType) => arg.getId());
+        const fullName = `interface-${node.getFullStart()}`;
+        const argumentIds = context.getArguments().map((arg: BaseType) => arg.getId());
 
         return argumentIds.length ? `${fullName}<${argumentIds.join(",")}>` : fullName;
     }

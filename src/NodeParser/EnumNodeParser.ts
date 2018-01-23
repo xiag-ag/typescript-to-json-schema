@@ -10,27 +10,31 @@ export class EnumNodeParser implements SubNodeParser {
     ) {
     }
 
-    public supportsNode(node: ts.EnumDeclaration): boolean {
-        return node.kind === ts.SyntaxKind.EnumDeclaration;
+    public supportsNode(node: ts.EnumDeclaration | ts.EnumMember): boolean {
+        return node.kind === ts.SyntaxKind.EnumDeclaration || node.kind === ts.SyntaxKind.EnumMember;
     }
-    public createType(node: ts.EnumDeclaration, context: Context): BaseType {
+    public createType(node: ts.EnumDeclaration | ts.EnumMember, context: Context): BaseType {
+        const members = node.kind === ts.SyntaxKind.EnumDeclaration ?
+            (node as ts.EnumDeclaration).members as any :
+            [node as ts.EnumMember];
+
         return new EnumType(
             `enum-${node.getFullStart()}`,
-            node.members.map((member: ts.EnumMember, index: number) => this.getMemberValue(member, index)),
+            members.map((member: ts.EnumMember, index: number) => this.getMemberValue(member, index)),
         );
     }
 
     private getMemberValue(member: ts.EnumMember, index: number): EnumValue {
-        const constantValue: number = this.typeChecker.getConstantValue(member);
+        const constantValue = this.typeChecker.getConstantValue(member);
         if (constantValue !== undefined) {
             return constantValue;
         }
 
-        const initializer: ts.Expression = member.initializer;
+        const initializer = member.initializer;
         if (!initializer) {
             return index;
         } else if (initializer.kind === ts.SyntaxKind.NoSubstitutionTemplateLiteral) {
-            return (member.name as ts.Identifier).getText();
+            return member.name.getText();
         } else {
             return this.parseInitializer(initializer);
         }

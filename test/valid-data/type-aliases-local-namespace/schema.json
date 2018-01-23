@@ -1,44 +1,63 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "definitions": {
-        "B.B": {
-            "properties": {
-                "b": {
-                }
-            },
-            "required": [
-                "b"
-            ],
-            "additionalProperties": false,
-            "type": "object"
-        },
-        "C.C": {
-            "properties": {
-                "c": {
-                    "$ref": "#/definitions/B.B"
-                }
-            },
-            "required": [
-                "c"
-            ],
-            "additionalProperties": false,
-            "type": "object"
-        },
-        "D.D": {
-            "properties": {
-                "d": {
-                    "$ref": "#/definitions/C.C"
-                }
-            },
-            "required": [
-                "d"
-            ],
-            "additionalProperties": false,
-            "type": "object"
-        },
-        "MyObject": {
-            "$ref": "#/definitions/D.D"
+  "$ref": "#/definitions/MyObject",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "B.B": {
+      "additionalProperties": false,
+      "properties": {
+        "b": {
         }
+      },
+      "required": [
+        "b"
+      ],
+      "type": "object"
     },
-    "$ref": "#/definitions/MyObject"
+    "C.C": {
+      "allOf": [
+        {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        {
+          "$ref": "#/definitions/C.CC"
+        }
+      ]
+    },
+    "C.CC": {
+      "additionalProperties": false,
+      "properties": {
+        "c": {
+          "$ref": "#/definitions/B.B"
+        }
+      },
+      "required": [
+        "c"
+      ],
+      "type": "object"
+    },
+    "D.D": {
+      "additionalProperties": false,
+      "properties": {
+        "d": {
+          "$ref": "#/definitions/C.C"
+        }
+      },
+      "required": [
+        "d"
+      ],
+      "type": "object"
+    },
+    "MyObject": {
+      "allOf": [
+        {
+          "additionalProperties": false,
+          "type": "object"
+        },
+        {
+          "$ref": "#/definitions/D.D"
+        }
+      ]
+    }
+  }
 }

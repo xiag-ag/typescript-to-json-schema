@@ -1,7 +1,7 @@
 import { Definition } from "./Definition";
-import { Map } from "../Utils/Map";
+import { StringMap } from "../Utils/StringMap";
 
 export interface Schema extends Definition {
     $schema: string;
-    definitions: Map<Definition>;
+    definitions: StringMap<Definition>;
 }

@@ -10,7 +10,7 @@ import { ExposeNodeParser } from "../src/ExposeNodeParser";
 import { TopRefNodeParser } from "../src/TopRefNodeParser";
 
 import { ExtendedAnnotationsReader } from "../src/AnnotationsReader/ExtendedAnnotationsReader";
-import { DefaultAnnotationsReader } from "../src/AnnotationsReader/DefaultAnnotationsReader";
+import { BasicAnnotationsReader } from "../src/AnnotationsReader/BasicAnnotationsReader";
 
 import { AnnotatedNodeParser } from "../src/NodeParser/AnnotatedNodeParser";
 
@@ -19,6 +19,7 @@ import { NumberTypeNodeParser } from "../src/NodeParser/NumberTypeNodeParser";
 import { BooleanTypeNodeParser } from "../src/NodeParser/BooleanTypeNodeParser";
 import { AnyTypeNodeParser } from "../src/NodeParser/AnyTypeNodeParser";
 import { VoidTypeNodeParser } from "../src/NodeParser/VoidTypeNodeParser";
+import { ObjectTypeNodeParser } from "../src/NodeParser/ObjectTypeNodeParser";
 
 import { StringLiteralNodeParser } from "../src/NodeParser/StringLiteralNodeParser";
 import { NumberLiteralNodeParser } from "../src/NodeParser/NumberLiteralNodeParser";
@@ -34,6 +35,11 @@ import { TypeAliasNodeParser } from "../src/NodeParser/TypeAliasNodeParser";
 import { TypeReferenceNodeParser } from "../src/NodeParser/TypeReferenceNodeParser";
 import { ExpressionWithTypeArgumentsNodeParser } from "../src/NodeParser/ExpressionWithTypeArgumentsNodeParser";
 
+import { IndexedAccessTypeNodeParser } from "../src/NodeParser/IndexedAccessTypeNodeParser";
+import { TypeofNodeParser } from "../src/NodeParser/TypeofNodeParser";
+import { MappedTypeNodeParser } from "../src/NodeParser/MappedTypeNodeParser";
+import { TypeOperatorNodeParser } from "../src/NodeParser/TypeOperatorNodeParser";
+
 import { TypeLiteralNodeParser } from "../src/NodeParser/TypeLiteralNodeParser";
 import { EnumNodeParser } from "../src/NodeParser/EnumNodeParser";
 
@@ -43,8 +49,8 @@ import { ArrayNodeParser } from "../src/NodeParser/ArrayNodeParser";
 import { TupleNodeParser } from "../src/NodeParser/TupleNodeParser";
 
 export function createParser(program: ts.Program, config: Config): NodeParser {
-    const typeChecker: ts.TypeChecker = program.getTypeChecker();
-    const chainNodeParser: ChainNodeParser = new ChainNodeParser(typeChecker, []);
+    const typeChecker = program.getTypeChecker();
+    const chainNodeParser = new ChainNodeParser(typeChecker, []);
 
     function withExpose(nodeParser: SubNodeParser): SubNodeParser {
         return new ExposeNodeParser(typeChecker, nodeParser, config.expose);
@@ -55,8 +61,8 @@ export function createParser(program: ts.Program, config: Config): NodeParser {
     function withJsDoc(nodeParser: SubNodeParser): SubNodeParser {
         if (config.jsDoc === "extended") {
             return new AnnotatedNodeParser(nodeParser, new ExtendedAnnotationsReader());
-        } else if (config.jsDoc === "default") {
-            return new AnnotatedNodeParser(nodeParser, new DefaultAnnotationsReader());
+        } else if (config.jsDoc === "basic") {
+            return new AnnotatedNodeParser(nodeParser, new BasicAnnotationsReader());
         } else {
             return nodeParser;
         }
@@ -71,6 +77,7 @@ export function createParser(program: ts.Program, config: Config): NodeParser {
         .addNodeParser(new BooleanTypeNodeParser())
         .addNodeParser(new AnyTypeNodeParser())
         .addNodeParser(new VoidTypeNodeParser())
+        .addNodeParser(new ObjectTypeNodeParser())
 
         .addNodeParser(new StringLiteralNodeParser())
         .addNodeParser(new NumberLiteralNodeParser())
@@ -83,17 +90,26 @@ export function createParser(program: ts.Program, config: Config): NodeParser {
         .addNodeParser(new TypeReferenceNodeParser(typeChecker, chainNodeParser))
         .addNodeParser(new ExpressionWithTypeArgumentsNodeParser(typeChecker, chainNodeParser))
 
-        .addNodeParser(withExpose(withJsDoc(new TypeAliasNodeParser(typeChecker, chainNodeParser))))
+        .addNodeParser(new IndexedAccessTypeNodeParser(typeChecker, chainNodeParser))
+        .addNodeParser(new TypeofNodeParser(typeChecker, chainNodeParser))
+        .addNodeParser(new MappedTypeNodeParser(typeChecker, chainNodeParser))
+        .addNodeParser(new TypeOperatorNodeParser(typeChecker, chainNodeParser))
+
+        .addNodeParser(new UnionNodeParser(chainNodeParser))
+        .addNodeParser(new IntersectionNodeParser(chainNodeParser))
+        .addNodeParser(new TupleNodeParser(chainNodeParser))
+
+        .addNodeParser(withCircular(withExpose(withJsDoc(
+            new TypeAliasNodeParser(typeChecker, chainNodeParser)))))
         .addNodeParser(withExpose(withJsDoc(new EnumNodeParser(typeChecker))))
         .addNodeParser(withCircular(withExpose(withJsDoc(
             new InterfaceNodeParser(typeChecker, withJsDoc(chainNodeParser)),
         ))))
+        .addNodeParser(withCircular(withExpose(withJsDoc(
+            new TypeLiteralNodeParser(withJsDoc(chainNodeParser)),
+        ))))
 
-        .addNodeParser(new TypeLiteralNodeParser(chainNodeParser))
-        .addNodeParser(new UnionNodeParser(chainNodeParser))
-        .addNodeParser(new IntersectionNodeParser(chainNodeParser))
-        .addNodeParser(new ArrayNodeParser(chainNodeParser))
-        .addNodeParser(new TupleNodeParser(chainNodeParser));
+        .addNodeParser(new ArrayNodeParser(chainNodeParser));
 
     return withTopRef(chainNodeParser);
 }

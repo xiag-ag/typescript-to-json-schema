@@ -1,33 +1,29 @@
 import * as Ajv from "ajv";
-import * as ts from "typescript";
-
 import { assert } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import * as ts from "typescript";
 
-import { createProgram } from "../factory/program";
-import { createParser } from "../factory/parser";
 import { createFormatter } from "../factory/formatter";
-
-import { Config } from "../src/Config";
+import { createParser } from "../factory/parser";
+import { createProgram } from "../factory/program";
+import { Config, DEFAULT_CONFIG, PartialConfig } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
+import { Run } from "./valid-data.test";
 
 const validator: Ajv.Ajv = new Ajv();
-const basePath: string = "test/config";
+const metaSchema: object = require("ajv/lib/refs/json-schema-draft-04.json");
+validator.addMetaSchema(metaSchema, "http://json-schema.org/draft-04/schema#");
 
-type PartialConfig = {
-    [Key in keyof Config]?: Config[Key];
-};
+const basePath = "test/config";
 
-function assertSchema(name: string, partialConfig: PartialConfig): void {
-    it(name, () => {
+function assertSchema(name: string, partialConfig: PartialConfig & {type: string}, only: Boolean = false): void {
+    const run: Run = only ? it.only : it;
+    run(name, () => {
         const config: Config = {
+            ... DEFAULT_CONFIG,
+            ...partialConfig,
             path: resolve(`${basePath}/${name}/*.ts`),
-            type: partialConfig.type,
-
-            expose: partialConfig.expose,
-            topRef: partialConfig.topRef,
-            jsDoc: partialConfig.jsDoc,
         };
 
         const program: ts.Program = createProgram(config);
@@ -59,7 +55,9 @@ describe("config", () => {
     assertSchema("expose-export-topref-false", {type: "MyObject", expose: "export", topRef: false, jsDoc: "none"});
 
     assertSchema("jsdoc-complex-none", {type: "MyObject", expose: "export", topRef: true, jsDoc: "none"});
-    assertSchema("jsdoc-complex-default", {type: "MyObject", expose: "export", topRef: true, jsDoc: "default"});
+    assertSchema("jsdoc-complex-basic", {type: "MyObject", expose: "export", topRef: true, jsDoc: "basic"});
     assertSchema("jsdoc-complex-extended", {type: "MyObject", expose: "export", topRef: true, jsDoc: "extended"});
     assertSchema("jsdoc-description-only", {type: "MyObject", expose: "export", topRef: true, jsDoc: "extended"});
+
+    assertSchema("jsdoc-inheritance", {type: "MyObject", expose: "export", topRef: true, jsDoc: "extended"});
 });

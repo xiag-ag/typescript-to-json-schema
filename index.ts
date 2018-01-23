@@ -7,7 +7,7 @@ export * from "./src/Error/UnknownTypeError";
 
 export * from "./src/Config";
 
-export * from "./src/Utils/Map";
+export * from "./src/Utils/StringMap";
 export * from "./src/Utils/uniqueArray";
 export * from "./src/Utils/formatError";
 
@@ -35,7 +35,7 @@ export * from "./src/Type/DefinitionType";
 export * from "./src/Type/AnnotatedType";
 
 export * from "./src/AnnotationsReader";
-export * from "./src/AnnotationsReader/DefaultAnnotationsReader";
+export * from "./src/AnnotationsReader/BasicAnnotationsReader";
 export * from "./src/AnnotationsReader/ExtendedAnnotationsReader";
 
 export * from "./src/TypeFormatter";

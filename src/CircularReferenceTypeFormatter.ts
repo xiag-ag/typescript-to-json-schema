@@ -3,8 +3,8 @@ import { BaseType } from "./Type/BaseType";
 import { Definition } from "./Schema/Definition";
 
 export class CircularReferenceTypeFormatter implements SubTypeFormatter {
-    private definition: Map<BaseType, Definition> = new Map<BaseType, Definition>();
-    private children: Map<BaseType, BaseType[]> = new Map<BaseType, BaseType[]>();
+    private definition = new Map<BaseType, Definition>();
+    private children = new Map<BaseType, BaseType[]>();
 
     public constructor(
         private childTypeFormatter: SubTypeFormatter,
@@ -16,7 +16,7 @@ export class CircularReferenceTypeFormatter implements SubTypeFormatter {
     }
     public getDefinition(type: BaseType): Definition {
         if (this.definition.has(type)) {
-            return this.definition.get(type);
+            return this.definition.get(type)!;
         }
 
         const definition: Definition = {};
@@ -26,7 +26,7 @@ export class CircularReferenceTypeFormatter implements SubTypeFormatter {
     }
     public getChildren(type: BaseType): BaseType[] {
         if (this.children.has(type)) {
-            return this.children.get(type);
+            return this.children.get(type)!;
         }
 
         const children: BaseType[] = [];

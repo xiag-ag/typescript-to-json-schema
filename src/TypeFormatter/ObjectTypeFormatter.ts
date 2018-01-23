@@ -5,6 +5,8 @@ import { BaseType } from "../Type/BaseType";
 import { AnyType } from "../Type/AnyType";
 import { Definition } from "../Schema/Definition";
 import { StringMap } from "../Utils/StringMap";
+import { UnionType } from "../Type/UnionType";
+import { UndefinedType } from "../Type/UndefinedType";
 
 export class ObjectTypeFormatter implements SubTypeFormatter {
     public constructor(
@@ -53,13 +55,15 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
         const additionalProperties = type.getAdditionalProperties();
 
         const required = objectProperties
+            .map((property: ObjectProperty) => this.prepareObjectProperty(property))
             .filter((property: ObjectProperty) => property.isRequired())
             .map((property: ObjectProperty) => property.getName());
-        const properties = objectProperties.reduce(
-            (result: StringMap<Definition>, property: ObjectProperty) => {
-                result[property.getName()] = this.childTypeFormatter.getDefinition(property.getType());
-                return result;
-            }, {});
+        const properties = objectProperties
+            .map((property: ObjectProperty) => this.prepareObjectProperty(property))
+            .reduce((result: StringMap<Definition>, property: ObjectProperty) => ({
+                ...result,
+                [property.getName()]: this.childTypeFormatter.getDefinition(property.getType()),
+            }), {});
 
         return {
             type: "object",
@@ -76,5 +80,27 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
         return additionalProperties instanceof AnyType
             ? {}
             : {additionalProperties: this.childTypeFormatter.getDefinition(additionalProperties)};
+    }
+
+    private prepareObjectProperty(property: ObjectProperty): ObjectProperty {
+        const propType = property.getType();
+        if (propType instanceof UndefinedType) {
+            return new ObjectProperty(property.getName(), new UndefinedType(), false);
+        } else if (!(propType instanceof UnionType)) {
+            return property;
+        }
+
+        const requiredTypes = propType.getTypes().filter((it: BaseType) => !(it instanceof UndefinedType));
+        if (propType.getTypes().length === requiredTypes.length) {
+            return property;
+        } else if (requiredTypes.length === 0) {
+            return new ObjectProperty(property.getName(), new UndefinedType(), false);
+        }
+
+        return new ObjectProperty(
+            property.getName(),
+            requiredTypes.length === 1 ? requiredTypes[0] : new UnionType(requiredTypes),
+            false,
+        );
     }
 }

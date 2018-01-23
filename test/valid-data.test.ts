@@ -107,7 +107,7 @@ describe("valid-data", () => {
     assertSchema("type-mapped-literal", "MyObject");
     assertSchema("type-mapped-generic", "MyObject");
     assertSchema("type-mapped-native", "MyObject");
-    //
+
     assertSchema("generic-simple", "MyObject");
     assertSchema("generic-arrays", "MyObject");
     assertSchema("generic-multiple", "MyObject");
@@ -117,4 +117,8 @@ describe("valid-data", () => {
     assertSchema("generic-hell", "MyObject");
 
     assertSchema("nullable-null", "MyObject");
+
+    assertSchema("undefined-alias", "MyType");
+    assertSchema("undefined-union", "MyType");
+    assertSchema("undefined-property", "MyType");
 });

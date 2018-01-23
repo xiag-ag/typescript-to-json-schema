@@ -18,7 +18,6 @@ import { StringTypeNodeParser } from "../src/NodeParser/StringTypeNodeParser";
 import { NumberTypeNodeParser } from "../src/NodeParser/NumberTypeNodeParser";
 import { BooleanTypeNodeParser } from "../src/NodeParser/BooleanTypeNodeParser";
 import { AnyTypeNodeParser } from "../src/NodeParser/AnyTypeNodeParser";
-import { VoidTypeNodeParser } from "../src/NodeParser/VoidTypeNodeParser";
 import { UndefinedTypeNodeParser } from "../src/NodeParser/UndefinedTypeNodeParser";
 import { ObjectTypeNodeParser } from "../src/NodeParser/ObjectTypeNodeParser";
 
@@ -77,7 +76,6 @@ export function createParser(program: ts.Program, config: Config): NodeParser {
         .addNodeParser(new NumberTypeNodeParser())
         .addNodeParser(new BooleanTypeNodeParser())
         .addNodeParser(new AnyTypeNodeParser())
-        .addNodeParser(new VoidTypeNodeParser())
         .addNodeParser(new UndefinedTypeNodeParser())
         .addNodeParser(new ObjectTypeNodeParser())
 

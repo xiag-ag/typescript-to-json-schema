@@ -12,7 +12,6 @@ import { BooleanTypeFormatter } from "../src/TypeFormatter/BooleanTypeFormatter"
 import { NullTypeFormatter } from "../src/TypeFormatter/NullTypeFormatter";
 
 import { AnyTypeFormatter } from "../src/TypeFormatter/AnyTypeFormatter";
-import { VoidTypeFormatter } from "../src/TypeFormatter/VoidTypeFormatter";
 import { UndefinedTypeFormatter } from "../src/TypeFormatter/UndefinedTypeFormatter";
 
 import { LiteralTypeFormatter } from "../src/TypeFormatter/LiteralTypeFormatter";
@@ -44,7 +43,6 @@ export function createFormatter(config: Config): TypeFormatter {
         .addTypeFormatter(new NullTypeFormatter())
 
         .addTypeFormatter(new AnyTypeFormatter())
-        .addTypeFormatter(new VoidTypeFormatter())
         .addTypeFormatter(new UndefinedTypeFormatter())
 
         .addTypeFormatter(new LiteralTypeFormatter())

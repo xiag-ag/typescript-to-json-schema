@@ -4,14 +4,10 @@
   "definitions": {
     "MyType": {
       "enum": [
-        {
-          "value": "foo"
-        },
-        {
-          "value": "bar"
-        }
+        0,
+        1
       ],
-      "type": "object"
+      "type": "number"
     }
   }
 }

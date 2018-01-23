@@ -3,6 +3,10 @@ import { Context, NodeParser } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { ObjectProperty, ObjectType } from "../Type/ObjectType";
+import { LiteralType } from "../Type/LiteralType";
+import { UnionType } from "../Type/UnionType";
+import { LogicError } from "../Error/LogicError";
+import { derefType } from "../Utils/derefType";
 
 export class MappedTypeNodeParser implements SubNodeParser {
     public constructor(
@@ -25,18 +29,36 @@ export class MappedTypeNodeParser implements SubNodeParser {
     }
 
     private getProperties(node: ts.MappedTypeNode, context: Context): ObjectProperty[] {
-        const type = this.typeChecker.getTypeFromTypeNode(node.typeParameter.constraint!) as ts.UnionType;
-        const keys = type.types as ts.StringLiteralType[];
+        const constraintType = this.childNodeParser.createType(node.typeParameter.constraint!, context);
 
-        return keys.reduce((result: ObjectProperty[], key: ts.StringLiteralType) => {
+        const keyListType = derefType(constraintType);
+        if (!(keyListType instanceof UnionType)) {
+            throw new LogicError(`Unexpected type "${constraintType.getId()}" (expected "UnionType")`);
+        }
+
+        return keyListType.getTypes().reduce((result: ObjectProperty[], key: LiteralType) => {
             const objectProperty = new ObjectProperty(
-                key.value,
-                this.childNodeParser.createType(node.type!, context),
+                key.getValue() as string,
+                this.childNodeParser.createType(node.type!, this.createSubContext(node, key, context)),
                 !node.questionToken,
             );
 
             result.push(objectProperty);
             return result;
         }, []);
+    }
+
+    private createSubContext(node: ts.MappedTypeNode, key: LiteralType, parentContext: Context): Context {
+        const subContext = new Context(node);
+
+        parentContext.getParameters().forEach((parentParameter: string) => {
+            subContext.pushParameter(parentParameter);
+            subContext.pushArgument(parentContext.getArgument(parentParameter));
+        });
+
+        subContext.pushParameter(node.typeParameter.name.text);
+        subContext.pushArgument(key);
+
+        return subContext;
     }
 }

@@ -1,6 +1,7 @@
 import * as ts from "typescript";
 import { Annotations } from "../Type/AnnotatedType";
 import { BasicAnnotationsReader } from "./BasicAnnotationsReader";
+import { symbolAtNode } from "../Utils/symbolAtNode";
 
 export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
     public getAnnotations(node: ts.Node): Annotations | undefined {
@@ -13,7 +14,7 @@ export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
     }
 
     private getDescriptionAnnotation(node: ts.Node): Annotations | undefined {
-        const symbol: ts.Symbol = (node as any).symbol;
+        const symbol = symbolAtNode(node);
         if (!symbol) {
             return undefined;
         }
@@ -26,7 +27,7 @@ export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
         return {description: comments.map((comment: ts.SymbolDisplayPart) => comment.text).join(" ")};
     }
     private getTypeAnnotation(node: ts.Node): Annotations | undefined {
-        const symbol: ts.Symbol = (node as any).symbol;
+        const symbol = symbolAtNode(node);
         if (!symbol) {
             return undefined;
         }

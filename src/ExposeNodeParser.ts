@@ -3,6 +3,7 @@ import { Context } from "./NodeParser";
 import { SubNodeParser } from "./SubNodeParser";
 import { BaseType } from "./Type/BaseType";
 import { DefinitionType } from "./Type/DefinitionType";
+import { localSymbolAtNode, symbolAtNode } from "./Utils/symbolAtNode";
 
 export class ExposeNodeParser implements SubNodeParser {
     public constructor(
@@ -34,11 +35,12 @@ export class ExposeNodeParser implements SubNodeParser {
             return false;
         }
 
-        const localSymbol: ts.Symbol = (node as any).localSymbol;
+        const localSymbol = localSymbolAtNode(node);
         return localSymbol ? "exportSymbol" in localSymbol : false;
     }
     private getDefinitionName(node: ts.Node, context: Context): string {
-        const fullName = this.typeChecker.getFullyQualifiedName((node as any).symbol).replace(/^".*"\./, "");
+        const symbol = symbolAtNode(node)!;
+        const fullName = this.typeChecker.getFullyQualifiedName(symbol).replace(/^".*"\./, "");
         const argumentIds = context.getArguments().map((arg: BaseType) => arg.getId());
 
         return argumentIds.length ? `${fullName}<${argumentIds.join(",")}>` : fullName;

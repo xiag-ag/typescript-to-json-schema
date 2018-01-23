@@ -44,7 +44,6 @@
     "typescript": "~2.6.2"
   },
   "devDependencies": {
-    "@types/assertion-error": "^1.1.0",
     "@types/chai": "^4.1.1",
     "@types/glob": "^5.0.34",
     "@types/json-stable-stringify": "^1.0.32",

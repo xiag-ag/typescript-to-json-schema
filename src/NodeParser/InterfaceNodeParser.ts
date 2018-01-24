@@ -60,10 +60,10 @@ export class InterfaceNodeParser implements SubNodeParser {
                 return result;
             }, []);
     }
-    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType | false {
+    private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType | undefined {
         const property = node.members.find((it) => it.kind === ts.SyntaxKind.IndexSignature);
         if (!property) {
-            return false;
+            return undefined;
         }
 
         const signature = property as ts.IndexSignatureDeclaration;

@@ -24,7 +24,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
             `indexed-type-${node.getFullStart()}`,
             [],
             this.getProperties(node, context),
-            false,
+            undefined,
         );
     }
 

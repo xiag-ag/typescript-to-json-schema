@@ -72,9 +72,9 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
             ...this.getAdditionalProperties(additionalProperties),
         };
     }
-    private getAdditionalProperties(additionalProperties: BaseType | boolean): Definition {
-        if (typeof additionalProperties === "boolean") {
-            return additionalProperties ? {} : {additionalProperties: false};
+    private getAdditionalProperties(additionalProperties: BaseType | undefined): Definition {
+        if (!additionalProperties) {
+            return {additionalProperties: false};
         }
 
         return additionalProperties instanceof AnyType

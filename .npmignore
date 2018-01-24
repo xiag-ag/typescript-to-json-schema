@@ -4,6 +4,9 @@ factory/
 test/
 dist/test/
 
+.nyc_output/
+coverage/
+
 index.ts
 typescript-to-json-schema.ts
 

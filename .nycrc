@@ -1,0 +1,19 @@
+{
+  "sourceMap": true,
+  "instrument": true,
+  "report-dir": "coverage",
+  "include": [
+    "src/**/*.ts"
+  ],
+  "require": [
+    "ts-node/register",
+    "source-map-support/register"
+  ],
+  "reporter": [
+    "text-summary",
+    "html"
+  ],
+  "extension": [
+    ".ts"
+  ]
+}

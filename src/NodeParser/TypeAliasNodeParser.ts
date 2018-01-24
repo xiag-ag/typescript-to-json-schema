@@ -3,6 +3,7 @@ import { NodeParser, Context } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { AliasType } from "../Type/AliasType";
+import { assertDefined } from "../Utils/assert";
 
 export class TypeAliasNodeParser implements SubNodeParser {
     public constructor(
@@ -17,7 +18,7 @@ export class TypeAliasNodeParser implements SubNodeParser {
     public createType(node: ts.TypeAliasDeclaration, context: Context): BaseType {
         if (node.typeParameters && node.typeParameters.length) {
             node.typeParameters.forEach((typeParam) => {
-                const nameSymbol = this.typeChecker.getSymbolAtLocation(typeParam.name)!;
+                const nameSymbol = assertDefined(this.typeChecker.getSymbolAtLocation(typeParam.name));
                 context.pushParameter(nameSymbol.name);
             });
         }

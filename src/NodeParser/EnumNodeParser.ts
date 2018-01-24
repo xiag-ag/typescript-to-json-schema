@@ -15,12 +15,12 @@ export class EnumNodeParser implements SubNodeParser {
     }
     public createType(node: ts.EnumDeclaration | ts.EnumMember, context: Context): BaseType {
         const members = node.kind === ts.SyntaxKind.EnumDeclaration
-            ? [...node.members]
+            ? node.members.slice()
             : [node];
 
         return new EnumType(
             `enum-${node.getFullStart()}`,
-            members.map((member: ts.EnumMember, index: number) => this.getMemberValue(member, index)),
+            members.map((member, index) => this.getMemberValue(member, index)),
         );
     }
 

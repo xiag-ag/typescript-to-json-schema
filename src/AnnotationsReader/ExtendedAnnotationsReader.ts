@@ -24,7 +24,7 @@ export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
             return undefined;
         }
 
-        return {description: comments.map((comment: ts.SymbolDisplayPart) => comment.text).join(" ")};
+        return {description: comments.map((comment) => comment.text).join(" ")};
     }
     private getTypeAnnotation(node: ts.Node): Annotations | undefined {
         const symbol = symbolAtNode(node);
@@ -37,7 +37,7 @@ export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
             return undefined;
         }
 
-        const jsDocTag = jsDocTags.find((tag: ts.JSDocTagInfo) => tag.name === "asType");
+        const jsDocTag = jsDocTags.find((tag) => tag.name === "asType");
         if (!jsDocTag || !jsDocTag.text) {
             return undefined;
         }

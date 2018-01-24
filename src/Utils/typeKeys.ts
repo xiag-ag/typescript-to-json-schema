@@ -2,14 +2,13 @@ import { uniqueArray } from "./uniqueArray";
 import { derefType } from "./derefType";
 
 import { BaseType } from "../Type/BaseType";
-import { LiteralType, LiteralValue } from "../Type/LiteralType";
+import { LiteralType } from "../Type/LiteralType";
 
 import { IntersectionType } from "../Type/IntersectionType";
 import { UnionType } from "../Type/UnionType";
 
 import { TupleType } from "../Type/TupleType";
-import { ObjectProperty, ObjectType } from "../Type/ObjectType";
-import { AnyType } from "../Type/AnyType";
+import { ObjectType } from "../Type/ObjectType";
 
 function uniqueLiterals(types: LiteralType[]): LiteralType[] {
     const values = types.map((type) => type.getValue());
@@ -70,10 +69,8 @@ export function getTypeByKey(type: BaseType, index: LiteralType): BaseType | und
         }
 
         const additionalProperty = type.getAdditionalProperties();
-        if (additionalProperty instanceof BaseType) {
+        if (additionalProperty) {
             return additionalProperty;
-        } else if (additionalProperty === true) {
-            return new AnyType();
         }
 
         for (const subType of type.getBaseTypes()) {

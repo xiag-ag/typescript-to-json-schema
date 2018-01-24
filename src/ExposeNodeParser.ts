@@ -4,6 +4,7 @@ import { SubNodeParser } from "./SubNodeParser";
 import { BaseType } from "./Type/BaseType";
 import { DefinitionType } from "./Type/DefinitionType";
 import { localSymbolAtNode, symbolAtNode } from "./Utils/symbolAtNode";
+import { assertDefined } from "./Utils/assert";
 
 export class ExposeNodeParser implements SubNodeParser {
     public constructor(
@@ -39,7 +40,7 @@ export class ExposeNodeParser implements SubNodeParser {
         return localSymbol ? "exportSymbol" in localSymbol : false;
     }
     private getDefinitionName(node: ts.Node, context: Context): string {
-        const symbol = symbolAtNode(node)!;
+        const symbol = assertDefined(symbolAtNode(node));
         const fullName = this.typeChecker.getFullyQualifiedName(symbol).replace(/^".*"\./, "");
         const argumentIds = context.getArguments().map((arg) => arg.getId());
 

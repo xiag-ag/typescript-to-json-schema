@@ -8,6 +8,7 @@ import { Definition } from "./Schema/Definition";
 import { StringMap } from "./Utils/StringMap";
 import { NoRootTypeError } from "./Error/NoRootTypeError";
 import { localSymbolAtNode, symbolAtNode } from "./Utils/symbolAtNode";
+import { assertDefined } from "./Utils/assert";
 
 export class SchemaGenerator {
     public constructor(
@@ -69,7 +70,7 @@ export class SchemaGenerator {
         );
     }
     private getFullName(node: ts.Node, typeChecker: ts.TypeChecker): string {
-        const symbol = symbolAtNode(node)!;
+        const symbol = assertDefined(symbolAtNode(node));
         return typeChecker.getFullyQualifiedName(symbol).replace(/".*"\./, "");
     }
 

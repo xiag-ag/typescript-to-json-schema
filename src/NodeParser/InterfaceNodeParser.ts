@@ -4,6 +4,7 @@ import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { ObjectType, ObjectProperty } from "../Type/ObjectType";
 import { symbolAtNode } from "../Utils/symbolAtNode";
+import { assertDefined } from "../Utils/assert";
 
 export class InterfaceNodeParser implements SubNodeParser {
     public constructor(
@@ -18,7 +19,7 @@ export class InterfaceNodeParser implements SubNodeParser {
     public createType(node: ts.InterfaceDeclaration, context: Context): BaseType {
         if (node.typeParameters && node.typeParameters.length) {
             node.typeParameters.forEach((typeParam) => {
-                const nameSymbol = this.typeChecker.getSymbolAtLocation(typeParam.name)!;
+                const nameSymbol = assertDefined(this.typeChecker.getSymbolAtLocation(typeParam.name));
                 context.pushParameter(nameSymbol.name);
             });
         }
@@ -46,10 +47,12 @@ export class InterfaceNodeParser implements SubNodeParser {
         return node.members
             .filter((property) => property.kind === ts.SyntaxKind.PropertySignature)
             .reduce((result: ObjectProperty[], propertyNode: ts.PropertySignature) => {
-                const propertySymbol = symbolAtNode(propertyNode)!;
+                const propertyType = assertDefined(propertyNode.type);
+                const propertySymbol = assertDefined(symbolAtNode(propertyNode));
+
                 const objectProperty = new ObjectProperty(
                     propertySymbol.getName(),
-                    this.childNodeParser.createType(propertyNode.type!, context),
+                    this.childNodeParser.createType(propertyType, context),
                     !propertyNode.questionToken,
                 );
 
@@ -64,7 +67,8 @@ export class InterfaceNodeParser implements SubNodeParser {
         }
 
         const signature = property as ts.IndexSignatureDeclaration;
-        return this.childNodeParser.createType(signature.type!, context);
+        const indexType = assertDefined(signature.type);
+        return this.childNodeParser.createType(indexType, context);
     }
 
     private getTypeId(node: ts.Node, context: Context): string {

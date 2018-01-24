@@ -3,6 +3,7 @@ import { Context, NodeParser } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { LogicError } from "../Error/LogicError";
+import { assertDefined, assertInstanceOf } from "../Utils/assert";
 
 export class TypeofNodeParser implements SubNodeParser {
     public constructor(
@@ -16,8 +17,8 @@ export class TypeofNodeParser implements SubNodeParser {
     }
 
     public createType(node: ts.TypeQueryNode, context: Context): BaseType {
-        const symbol = this.typeChecker.getSymbolAtLocation(node.exprName)!;
-        const valueDec = symbol.valueDeclaration! as ts.VariableDeclaration;
+        const symbol = assertDefined(this.typeChecker.getSymbolAtLocation(node.exprName));
+        const valueDec = assertDefined(symbol.valueDeclaration) as ts.VariableDeclaration;
 
         if (valueDec.type) {
             return this.childNodeParser.createType(valueDec.type, context);

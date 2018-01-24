@@ -5,8 +5,8 @@ import { BaseType } from "../Type/BaseType";
 import { ObjectProperty, ObjectType } from "../Type/ObjectType";
 import { LiteralType } from "../Type/LiteralType";
 import { UnionType } from "../Type/UnionType";
-import { LogicError } from "../Error/LogicError";
 import { derefType } from "../Utils/derefType";
+import { assertDefined, assertInstanceOf } from "../Utils/assert";
 
 export class MappedTypeNodeParser implements SubNodeParser {
     public constructor(
@@ -29,17 +29,30 @@ export class MappedTypeNodeParser implements SubNodeParser {
     }
 
     private getProperties(node: ts.MappedTypeNode, context: Context): ObjectProperty[] {
-        const constraintType = this.childNodeParser.createType(node.typeParameter.constraint!, context);
+        const constraintNode = assertDefined(node.typeParameter.constraint);
+        const constraintType = this.childNodeParser.createType(constraintNode, context);
 
-        const keyListType = derefType(constraintType);
-        if (!(keyListType instanceof UnionType)) {
-            throw new LogicError(`Unexpected type "${constraintType.getId()}" (expected "UnionType")`);
-        }
+        const keyListType = assertInstanceOf(
+            derefType(constraintType),
+            UnionType,
+            `Mapped type keys should be instance of UnionType ("${constraintType.getId()}" given)`,
+        );
 
-        return keyListType.getTypes().reduce((result: ObjectProperty[], key: LiteralType) => {
+        const typeNode = assertDefined(node.type);
+        return keyListType.getTypes().reduce((result: ObjectProperty[], keyType) => {
+            const propertyType = this.childNodeParser.createType(
+                typeNode,
+                this.createSubContext(node, keyType, context),
+            );
+            const propertyName = assertInstanceOf(
+                keyType,
+                LiteralType,
+                `Mapped type key should be instance of LiteralType ("${keyType.getId()}" given)`,
+            ).getValue() as string;
+
             const objectProperty = new ObjectProperty(
-                key.getValue() as string,
-                this.childNodeParser.createType(node.type!, this.createSubContext(node, key, context)),
+                propertyName,
+                propertyType,
                 !node.questionToken,
             );
 
@@ -48,7 +61,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
         }, []);
     }
 
-    private createSubContext(node: ts.MappedTypeNode, key: LiteralType, parentContext: Context): Context {
+    private createSubContext(node: ts.MappedTypeNode, keyType: BaseType, parentContext: Context): Context {
         const subContext = new Context(node);
 
         parentContext.getParameters().forEach((parentParameter) => {
@@ -57,7 +70,7 @@ export class MappedTypeNodeParser implements SubNodeParser {
         });
 
         subContext.pushParameter(node.typeParameter.name.text);
-        subContext.pushArgument(key);
+        subContext.pushArgument(keyType);
 
         return subContext;
     }

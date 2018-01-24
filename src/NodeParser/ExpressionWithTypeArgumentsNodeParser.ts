@@ -2,6 +2,7 @@ import * as ts from "typescript";
 import { NodeParser, Context } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
+import { assertDefined } from "../Utils/assert";
 
 export class ExpressionWithTypeArgumentsNodeParser implements SubNodeParser {
     public constructor(
@@ -14,18 +15,24 @@ export class ExpressionWithTypeArgumentsNodeParser implements SubNodeParser {
         return node.kind === ts.SyntaxKind.ExpressionWithTypeArguments;
     }
     public createType(node: ts.ExpressionWithTypeArguments, context: Context): BaseType {
-        const typeSymbol = this.typeChecker.getSymbolAtLocation(node.expression)!;
+        const typeSymbol = assertDefined(this.typeChecker.getSymbolAtLocation(node.expression));
         if (typeSymbol.flags & ts.SymbolFlags.Alias) {
             const aliasedSymbol = this.typeChecker.getAliasedSymbol(typeSymbol);
+            const declarations = assertDefined(aliasedSymbol.declarations);
+            const declaration = declarations.find((it) => this.isValidDeclaration(it));
+
             return this.childNodeParser.createType(
-                aliasedSymbol.declarations![0],
+                assertDefined(declaration),
                 this.createSubContext(node, context),
             );
         } else if (typeSymbol.flags & ts.SymbolFlags.TypeParameter) {
             return context.getArgument(typeSymbol.name);
         } else {
+            const declarations = assertDefined(typeSymbol.declarations);
+            const declaration = declarations.find((it) => this.isValidDeclaration(it));
+
             return this.childNodeParser.createType(
-                typeSymbol.declarations![0],
+                assertDefined(declaration),
                 this.createSubContext(node, context),
             );
         }
@@ -39,5 +46,11 @@ export class ExpressionWithTypeArgumentsNodeParser implements SubNodeParser {
             });
         }
         return subContext;
+    }
+    private isValidDeclaration(declration: ts.Declaration): boolean {
+        return (
+            declration.kind !== ts.SyntaxKind.ModuleDeclaration &&
+            declration.kind !== ts.SyntaxKind.VariableDeclaration
+        );
     }
 }

@@ -106,6 +106,8 @@ describe("valid-data", () => {
     assertSchema("type-indexed-access-object-2", "MyType");
     assertSchema("type-keyof-tuple", "MyType");
     assertSchema("type-keyof-object", "MyType");
+    assertSchema("type-keyof-union", "MyType");
+    assertSchema("type-keyof-primitive", "MyType");
     assertSchema("type-mapped-simple", "MyObject");
     assertSchema("type-mapped-index", "MyObject");
     assertSchema("type-mapped-literal", "MyObject");

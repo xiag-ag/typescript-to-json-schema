@@ -34,9 +34,13 @@ export class UnionTypeFormatter implements SubTypeFormatter {
             };
         }
 
-        return definitions.length > 1 ? {
-            anyOf: definitions,
-        } : definitions[0];
+        if (definitions.length === 0) {
+            return {not: {}};
+        } else if (definitions.length === 1) {
+            return definitions[0];
+        } else {
+            return {anyOf: definitions};
+        }
     }
     public getChildren(type: UnionType): BaseType[] {
         return type.getTypes().reduce((result: BaseType[], item) => [

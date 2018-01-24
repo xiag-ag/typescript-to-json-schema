@@ -10,7 +10,7 @@ export class EnumTypeFormatter implements SubTypeFormatter {
     }
     public getDefinition(type: EnumType): Definition {
         const values = uniqueArray(type.getValues());
-        const types = uniqueArray(values.map((value: EnumValue) => this.getValueType(value)));
+        const types = uniqueArray(values.map((value) => this.getValueType(value)));
 
         return {
             type: types.length === 1 ? types[0] : types,

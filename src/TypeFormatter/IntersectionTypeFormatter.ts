@@ -15,11 +15,11 @@ export class IntersectionTypeFormatter implements SubTypeFormatter {
     }
     public getDefinition(type: IntersectionType): Definition {
         return {
-            allOf: type.getTypes().map((item: BaseType) => this.childTypeFormatter.getDefinition(item)),
+            allOf: type.getTypes().map((item) => this.childTypeFormatter.getDefinition(item)),
         };
     }
     public getChildren(type: IntersectionType): BaseType[] {
-        return type.getTypes().reduce((result: BaseType[], item: BaseType) => [
+        return type.getTypes().reduce((result: BaseType[], item) => [
             ...result,
             ...this.childTypeFormatter.getChildren(item),
         ], []);

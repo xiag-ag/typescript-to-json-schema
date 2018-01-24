@@ -15,9 +15,7 @@ export class IntersectionNodeParser implements SubNodeParser {
     }
     public createType(node: ts.IntersectionTypeNode, context: Context): BaseType {
         return new IntersectionType(
-            node.types.map((subnode: ts.Node) => {
-                return this.childNodeParser.createType(subnode, context);
-            }),
+            node.types.map((subnode) => this.childNodeParser.createType(subnode, context)),
         );
     }
 }

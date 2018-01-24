@@ -15,7 +15,7 @@ export class UnionNodeParser implements SubNodeParser {
     }
     public createType(node: ts.UnionTypeNode, context: Context): BaseType {
         return new UnionType(
-            node.types.map((subnode: ts.Node) => {
+            node.types.map((subnode) => {
                 return this.childNodeParser.createType(subnode, context);
             }),
         );

@@ -1,0 +1,25 @@
+{
+  "$ref": "#/definitions/MyObject",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "MyObject": {
+      "additionalProperties": false,
+      "description": "Some description here",
+      "title": "Some title here",
+      "properties": {
+        "validJsDoc": {
+          "default": {"abc": 123},
+          "minLength": 123
+        },
+        "invalidJsDoc": {},
+        "emptyJsDoc": {}
+      },
+      "required": [
+        "validJsDoc",
+        "invalidJsDoc",
+        "emptyJsDoc"
+      ],
+      "type": "object"
+    }
+  }
+}

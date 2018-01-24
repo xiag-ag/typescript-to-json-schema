@@ -1,0 +1,43 @@
+{
+  "$ref": "#/definitions/MyObject",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "MyObject": {
+      "type": "object",
+      "properties": {
+        "primitive": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "null"
+          ]
+        },
+        "object": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "primitive",
+        "object"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

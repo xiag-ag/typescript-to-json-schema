@@ -63,6 +63,7 @@ describe("valid-data", () => {
     assertSchema("enums-initialized", "Enum");
     assertSchema("enums-compute", "Enum");
     assertSchema("enums-mixed", "Enum");
+    assertSchema("enums-complex", "Enum");
     assertSchema("enums-member", "MyObject");
 
     assertSchema("string-literals", "MyObject");

@@ -1,21 +1,16 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "definitions": {
-        "Enum": {
-            "type": [
-                "number",
-                "boolean",
-                "string",
-                "null"
-            ],
-            "enum": [
-                0,
-                1,
-                true,
-                "str",
-                null
-            ]
-        }
-    },
-    "$ref": "#/definitions/Enum"
+  "$ref": "#/definitions/Enum",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "Enum": {
+      "type": [
+        "string",
+        "number"
+      ],
+      "enum": [
+        "x",
+        100
+      ]
+    }
+  }
 }

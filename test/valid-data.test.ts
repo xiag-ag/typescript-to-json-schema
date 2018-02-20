@@ -9,8 +9,8 @@ import { Config } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
 
 const validator = new Ajv();
-const metaSchema = require("ajv/lib/refs/json-schema-draft-04.json");
-validator.addMetaSchema(metaSchema, "http://json-schema.org/draft-04/schema#");
+const metaSchema = require("ajv/lib/refs/json-schema-draft-06.json");
+validator.addMetaSchema(metaSchema);
 
 function assertSchema(name: string, type: string): void {
     it(name, () => {
@@ -39,7 +39,7 @@ function assertSchema(name: string, type: string): void {
         assert.deepEqual(actual, expected);
 
         validator.validateSchema(actual);
-        assert.equal(validator.errors, null);
+        assert.isNull(validator.errors);
     });
 }
 

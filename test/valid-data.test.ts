@@ -107,8 +107,17 @@ describe("valid-data", () => {
     assertSchema("type-indexed-access-tuple-2", "MyType");
     assertSchema("type-indexed-access-object-1", "MyType");
     assertSchema("type-indexed-access-object-2", "MyType");
+    assertSchema("type-indexed-access-object-3", "MyType");
+    assertSchema("type-indexed-access-object-4", "MyType");
+    assertSchema("type-indexed-access-object-5", "MyType");
+    assertSchema("type-indexed-access-object-6", "MyType");
+    assertSchema("type-indexed-access-object-7", "MyType");
+    assertSchema("type-indexed-access-object-8", "MyType");
     assertSchema("type-keyof-tuple", "MyType");
-    assertSchema("type-keyof-object", "MyType");
+    assertSchema("type-keyof-object-1", "MyType");
+    assertSchema("type-keyof-object-2", "MyType");
+    assertSchema("type-keyof-object-3", "MyType");
+    assertSchema("type-keyof-intersection", "MyType");
     assertSchema("type-keyof-union", "MyType");
     assertSchema("type-keyof-primitive", "MyType");
     assertSchema("type-mapped-simple", "MyObject");

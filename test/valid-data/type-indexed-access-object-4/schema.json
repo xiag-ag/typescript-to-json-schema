@@ -3,10 +3,6 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "definitions": {
     "MyType": {
-      "enum": [
-        "0",
-        "1"
-      ],
       "type": "string"
     }
   }

@@ -3,6 +3,7 @@ import { UnionType } from "../Type/UnionType";
 import { BaseType } from "../Type/BaseType";
 import { PrimitiveType } from "../Type/PrimitiveType";
 import { Definition } from "../Schema/Definition";
+import { RawTypeName } from "../Schema/RawType";
 import { uniqueArray } from "../Utils/uniqueArray";
 import { LogicError } from "../Error/LogicError";
 
@@ -33,7 +34,7 @@ export class PrimitiveUnionTypeFormatter implements SubTypeFormatter {
     private isPrimitiveUnion(type: UnionType): boolean {
         return type.getTypes().every((item) => item instanceof PrimitiveType);
     }
-    private getPrimitiveType(item: BaseType): string {
+    private getPrimitiveType(item: BaseType): RawTypeName {
         if (item instanceof StringType) {
             return "string";
         } else if (item instanceof NumberType) {

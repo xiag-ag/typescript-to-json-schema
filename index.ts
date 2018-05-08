@@ -17,6 +17,7 @@ export * from "./src/Utils/assert";
 
 export * from "./src/Schema/Definition";
 export * from "./src/Schema/Schema";
+export * from "./src/Schema/RawType";
 
 export * from "./src/Type/BaseType";
 export * from "./src/Type/AnyType";

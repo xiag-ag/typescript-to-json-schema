@@ -4,7 +4,9 @@ import { NullType } from "../Type/NullType";
 import { BaseType } from "../Type/BaseType";
 import { LiteralType } from "../Type/LiteralType";
 import { Definition } from "../Schema/Definition";
+import { RawType, RawTypeName } from "../Schema/RawType";
 import { uniqueArray } from "../Utils/uniqueArray";
+import { typeName } from "../Utils/typeName";
 
 export class LiteralUnionTypeFormatter implements SubTypeFormatter {
     public supportsType(type: UnionType): boolean {
@@ -37,10 +39,10 @@ export class LiteralUnionTypeFormatter implements SubTypeFormatter {
     private isLiteralUnion(type: UnionType): boolean {
         return type.getTypes().every((item) => item instanceof LiteralType || item instanceof NullType);
     }
-    private getLiteralValue(value: LiteralType | NullType): string | number | boolean | null {
+    private getLiteralValue(value: LiteralType | NullType): RawType {
         return value instanceof LiteralType ? value.getValue() : null;
     }
-    private getLiteralType(value: LiteralType | NullType): string {
-        return value instanceof LiteralType ? typeof value.getValue() : "null";
+    private getLiteralType(value: LiteralType | NullType): RawTypeName {
+        return value instanceof LiteralType ? typeName(value.getValue()) : "null";
     }
 }

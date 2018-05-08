@@ -70,6 +70,9 @@ describe("valid-data", () => {
     assertSchema("string-literals-inline", "MyObject");
     assertSchema("string-literals-null", "MyObject");
 
+    assertSchema("literals-number", "MyObject");
+    assertSchema("literals-boolean", "MyObject");
+
     assertSchema("namespace-deep-1", "RootNamespace.Def");
     assertSchema("namespace-deep-2", "RootNamespace.SubNamespace.HelperA");
     assertSchema("namespace-deep-3", "RootNamespace.SubNamespace.HelperB");
@@ -121,6 +124,7 @@ describe("valid-data", () => {
     assertSchema("generic-anonymous", "MyObject");
     assertSchema("generic-recursive", "MyObject");
     assertSchema("generic-hell", "MyObject");
+    assertSchema("generic-names", "MyObject");
 
     assertSchema("nullable-null", "MyObject");
 

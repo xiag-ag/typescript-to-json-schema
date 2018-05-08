@@ -1,12 +1,8 @@
 export abstract class BaseError implements Error {
-    private callStack: any;
+    public readonly stack: string;
 
-    public constructor() {
-        this.callStack = new Error().stack;
-    }
-
-    public get stack(): string {
-        return this.callStack;
+    protected constructor() {
+        Error.captureStackTrace(this, this.constructor);
     }
 
     public abstract get name(): string;

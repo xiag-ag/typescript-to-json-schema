@@ -1,8 +1,10 @@
+import { intersectArray } from "./intersectArray";
 import { uniqueArray } from "./uniqueArray";
 import { derefType } from "./derefType";
+import { filterDefined } from "./filterDefined";
 
 import { BaseType } from "../Type/BaseType";
-import { LiteralType } from "../Type/LiteralType";
+import { LiteralType, LiteralValue } from "../Type/LiteralType";
 
 import { IntersectionType } from "../Type/IntersectionType";
 import { UnionType } from "../Type/UnionType";
@@ -10,33 +12,49 @@ import { UnionType } from "../Type/UnionType";
 import { TupleType } from "../Type/TupleType";
 import { ObjectType } from "../Type/ObjectType";
 
+function literalToValue(literal: LiteralType): LiteralValue {
+    return literal.getValue();
+}
+function valueToLiteral(value: LiteralValue): LiteralType {
+    return new LiteralType(value);
+}
+
 function uniqueLiterals(types: LiteralType[]): LiteralType[] {
-    const values = types.map((type) => type.getValue());
-    return uniqueArray(values).map((value) => new LiteralType(value));
+    const values = types.map(literalToValue);
+    return uniqueArray(values).map(valueToLiteral);
+}
+function intersectLiterals(types: LiteralType[][]): LiteralType[] {
+    const [first, ...rest] = types;
+    return intersectArray(first.map(literalToValue), ...rest.map((it) => it.map(literalToValue))).map(valueToLiteral);
 }
 
 export function getTypeKeys(type: BaseType): LiteralType[] {
     type = derefType(type);
 
-    if (
-        type instanceof IntersectionType ||
-        type instanceof UnionType
-    ) {
-        return uniqueLiterals(type.getTypes().reduce((result: LiteralType[], subType) => [
-            ...result,
-            ...getTypeKeys(subType),
-        ], []));
-    }
-
-    if (type instanceof TupleType) {
-        return type.getTypes().map((it, idx) => new LiteralType(idx));
-    }
-    if (type instanceof ObjectType) {
-        const objectProperties = type.getProperties().map((it) => new LiteralType(it.getName()));
-        return uniqueLiterals(type.getBaseTypes().reduce((result: LiteralType[], parentType) => [
-            ...result,
-            ...getTypeKeys(parentType),
-        ], objectProperties));
+    if (type instanceof IntersectionType) {
+        return uniqueLiterals(
+            type.getTypes()
+                .map(getTypeKeys)
+                .reduce((result, types) => [...result, ...types], []),
+        );
+    } else if (type instanceof UnionType) {
+        return intersectLiterals(
+            type.getTypes()
+                .map(getTypeKeys),
+        );
+    } else if (type instanceof ObjectType) {
+        const objectProperties = type.getProperties()
+            .map((property) => property.getName())
+            .map(valueToLiteral);
+        return uniqueLiterals(
+            type.getBaseTypes()
+                .map(getTypeKeys)
+                .reduce((result, types) => [...result, ...types], objectProperties),
+        );
+    } else if (type instanceof TupleType) {
+        return type.getTypes()
+            .map((_, index) => index.toString())
+            .map(valueToLiteral);
     }
 
     return [];
@@ -45,24 +63,19 @@ export function getTypeKeys(type: BaseType): LiteralType[] {
 export function getTypeByKey(type: BaseType, index: LiteralType): BaseType | undefined {
     type = derefType(type);
 
-    if (
-        type instanceof IntersectionType ||
-        type instanceof UnionType
-    ) {
-        for (const subType of type.getTypes()) {
-            const subKeyType = getTypeByKey(subType, index);
-            if (subKeyType) {
-                return subKeyType;
-            }
-        }
-
-        return undefined;
-    }
-
-    if (type instanceof TupleType) {
+    if (type instanceof IntersectionType) {
+        const types = type.getTypes()
+            .map((subType) => getTypeByKey(subType, index))
+            .filter(filterDefined);
+        return types.length > 1 ? new IntersectionType(types) : types[0];
+    } else if (type instanceof UnionType) {
+        const types = type.getTypes()
+            .map((subType) => getTypeByKey(subType, index))
+            .filter(filterDefined);
+        return types.length > 1 ? new UnionType(types) : types[0];
+    } else if (type instanceof TupleType) {
         return type.getTypes().find((it, idx) => idx === index.getValue());
-    }
-    if (type instanceof ObjectType) {
+    } else if (type instanceof ObjectType) {
         const property = type.getProperties().find((it) => it.getName() === index.getValue());
         if (property) {
             return property.getType();

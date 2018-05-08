@@ -1,0 +1,22 @@
+{
+  "$ref": "#/definitions/MyType",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "MyType": {
+      "allOf": [
+        {
+          "enum": [
+            "a"
+          ],
+          "type": "string"
+        },
+        {
+          "enum": [
+            "b"
+          ],
+          "type": "string"
+        }
+      ]
+    }
+  }
+}

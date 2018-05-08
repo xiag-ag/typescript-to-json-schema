@@ -4,8 +4,8 @@
   "definitions": {
     "MyType": {
       "enum": [
-        "0",
-        "1"
+        "c",
+        "d"
       ],
       "type": "string"
     }

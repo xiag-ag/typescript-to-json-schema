@@ -36,6 +36,7 @@ describe("invalid-data", () => {
     assertSchema("script-empty", "MyType", `No root type "MyType" found`);
     assertSchema("unknown-node-type", "MyType", `Unknown node ""123" + "456""`);
     assertSchema("unknown-initializer", "MyType", `Invalid type query " obj"`);
+    assertSchema("conditional-types", "MyType", `Unknown node " T extends boolean ? "yes" : "no""`);
 
     assertSchema("literal-index-type", "MyType", `Unknown node " ["abc", "def"]`);
     assertSchema("literal-array-type", "MyType", `Unknown node " ["abc", "def"]`);

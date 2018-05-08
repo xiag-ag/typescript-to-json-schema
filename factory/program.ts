@@ -43,6 +43,8 @@ function createProgramFromGlob(fileGlob: string): ts.Program {
         target: ts.ScriptTarget.ES5,
         module: ts.ModuleKind.CommonJS,
         strictNullChecks: false,
+        strictFunctionTypes: false,
+        types: [],
     });
 }
 

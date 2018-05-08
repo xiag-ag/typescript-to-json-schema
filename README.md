@@ -10,6 +10,7 @@ Inspired by [`YousefED/typescript-json-schema`](https://github.com/YousefED/type
 * this implementation does not use `typeChecker.getTypeAtLocation()` (so probably it keeps correct type aliases)
 * the following features are not supported yet:
   * `class` types
+  * conditional types
 * processing AST and formatting JSON schema have been split into two independent steps
 * not exported types, interfaces, enums are not exposed in the `definitions` section in the JSON schema
 

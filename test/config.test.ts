@@ -10,8 +10,8 @@ import { Config, DEFAULT_CONFIG, PartialConfig } from "../src/Config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
 
 const validator = new Ajv();
-const metaSchema = require("ajv/lib/refs/json-schema-draft-04.json");
-validator.addMetaSchema(metaSchema, "http://json-schema.org/draft-04/schema#");
+const metaSchema = require("ajv/lib/refs/json-schema-draft-06.json");
+validator.addMetaSchema(metaSchema);
 
 type TestConfig = Partial<PartialConfig> & {type: string};
 function assertSchema(name: string, testConfig: TestConfig): void {
@@ -37,7 +37,7 @@ function assertSchema(name: string, testConfig: TestConfig): void {
         assert.deepEqual(actual, expected);
 
         validator.validateSchema(actual);
-        assert.equal(validator.errors, null);
+        assert.isNull(validator.errors);
     });
 }
 

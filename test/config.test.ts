@@ -55,6 +55,7 @@ describe("config", () => {
     assertSchema("jsdoc-complex-basic", {type: "MyObject", expose: "export", topRef: true, jsDoc: "basic"});
     assertSchema("jsdoc-complex-extended", {type: "MyObject", expose: "export", topRef: true, jsDoc: "extended"});
     assertSchema("jsdoc-description-only", {type: "MyObject", expose: "export", topRef: true, jsDoc: "extended"});
+    assertSchema("jsdoc-empty-or-invalid", {type: "MyObject", expose: "export", topRef: true, jsDoc: "basic"});
 
     assertSchema("jsdoc-inheritance", {type: "MyObject", expose: "export", topRef: true, jsDoc: "extended"});
 });

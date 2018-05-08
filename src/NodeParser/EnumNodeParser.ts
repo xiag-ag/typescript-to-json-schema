@@ -3,6 +3,8 @@ import { Context } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { EnumType, EnumValue } from "../Type/EnumType";
+import { UnknownNodeError } from "../Error/UnknownNodeError";
+import { assertDefined } from "../Utils/assert";
 
 export class EnumNodeParser implements SubNodeParser {
     public constructor(
@@ -20,24 +22,18 @@ export class EnumNodeParser implements SubNodeParser {
 
         return new EnumType(
             `enum-${node.getFullStart()}`,
-            members.map((member, index) => this.getMemberValue(member, index)),
+            members.map((member) => this.getMemberValue(member)),
         );
     }
 
-    private getMemberValue(member: ts.EnumMember, index: number): EnumValue {
+    private getMemberValue(member: ts.EnumMember): EnumValue {
         const constantValue = this.typeChecker.getConstantValue(member);
         if (constantValue !== undefined) {
             return constantValue;
         }
 
-        const initializer = member.initializer;
-        if (!initializer) {
-            return index;
-        } else if (initializer.kind === ts.SyntaxKind.NoSubstitutionTemplateLiteral) {
-            return member.name.getText();
-        } else {
-            return this.parseInitializer(initializer);
-        }
+        const initializer = assertDefined(member.initializer);
+        return this.parseInitializer(initializer);
     }
     private parseInitializer(initializer: ts.Node): EnumValue {
         if (initializer.kind === ts.SyntaxKind.TrueKeyword) {
@@ -46,16 +42,20 @@ export class EnumNodeParser implements SubNodeParser {
             return false;
         } else if (initializer.kind === ts.SyntaxKind.NullKeyword) {
             return null;
+        } else if (initializer.kind === ts.SyntaxKind.NumericLiteral) {
+            return parseFloat((initializer as ts.NumericLiteral).text);
         } else if (initializer.kind === ts.SyntaxKind.StringLiteral) {
-            return (initializer as ts.LiteralLikeNode).text;
+            return (initializer as ts.StringLiteral).text;
+        } else if (initializer.kind === ts.SyntaxKind.NoSubstitutionTemplateLiteral) {
+            return (initializer as ts.NoSubstitutionTemplateLiteral).text;
         } else if (initializer.kind === ts.SyntaxKind.ParenthesizedExpression) {
             return this.parseInitializer((initializer as ts.ParenthesizedExpression).expression);
         } else if (initializer.kind === ts.SyntaxKind.AsExpression) {
             return this.parseInitializer((initializer as ts.AsExpression).expression);
         } else if (initializer.kind === ts.SyntaxKind.TypeAssertionExpression) {
             return this.parseInitializer((initializer as ts.TypeAssertion).expression);
-        } else {
-            return initializer.getText();
         }
+
+        throw new UnknownNodeError(initializer);
     }
 }

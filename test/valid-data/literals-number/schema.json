@@ -1,0 +1,34 @@
+{
+    "$ref": "#/definitions/MyObject",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+      "MyObject": {
+        "additionalProperties": false,
+        "properties": {
+          "a": {
+            "enum": [123],
+            "type": "number"
+          },
+          "b": {
+            "enum": [456],
+            "type": "number"
+          },
+          "c": {
+            "enum": [123, 456],
+            "type": "number"
+          },
+          "d": {
+            "enum": [123, 456, null],
+            "type": ["number", "null"]
+          }
+        },
+        "required": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "type": "object"
+      }
+    }
+  }

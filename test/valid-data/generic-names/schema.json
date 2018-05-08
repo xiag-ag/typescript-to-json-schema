@@ -1,0 +1,456 @@
+{
+  "$ref": "#/definitions/MyObject",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "MyObject": {
+      "additionalProperties": false,
+      "properties": {
+        "array1": {
+          "$ref": "#/definitions/PublicGeneric<[1,\"a\",true,null]>"
+        },
+        "array2": {
+          "$ref": "#/definitions/PublicGeneric<string[]>"
+        },
+        "enum1": {
+          "$ref": "#/definitions/PublicGeneric<enum-241>"
+        },
+        "enum2": {
+          "$ref": "#/definitions/PublicGeneric<PublicEnum>"
+        },
+        "literal1": {
+          "$ref": "#/definitions/PublicGeneric<123>"
+        },
+        "literal2": {
+          "$ref": "#/definitions/PublicGeneric<\"abc\">"
+        },
+        "literal4": {
+          "$ref": "#/definitions/PublicGeneric<true>"
+        },
+        "literal5": {
+          "$ref": "#/definitions/PublicGeneric<false>"
+        },
+        "mix1": {
+          "$ref": "#/definitions/PublicGeneric<(number&string)>"
+        },
+        "mix2": {
+          "$ref": "#/definitions/PublicGeneric<(number|string)>"
+        },
+        "object1": {
+          "$ref": "#/definitions/PublicGeneric<structure-830>"
+        },
+        "object2": {
+          "$ref": "#/definitions/PublicGeneric<interface-51>"
+        },
+        "object3": {
+          "$ref": "#/definitions/PublicGeneric<PublicInterface>"
+        },
+        "object4": {
+          "$ref": "#/definitions/PublicGeneric<alias-154>"
+        },
+        "object5": {
+          "$ref": "#/definitions/PublicGeneric<PublicType>"
+        },
+        "primitive1": {
+          "$ref": "#/definitions/PublicGeneric<number>"
+        },
+        "primitive2": {
+          "$ref": "#/definitions/PublicGeneric<string>"
+        },
+        "primitive3": {
+          "$ref": "#/definitions/PublicGeneric<boolean>"
+        },
+        "primitive4": {
+          "$ref": "#/definitions/PublicGeneric<null>"
+        },
+        "primitive5": {
+          "$ref": "#/definitions/PublicGeneric<undefined>"
+        },
+        "primitive6": {
+          "$ref": "#/definitions/PublicGeneric<any>"
+        }
+      },
+      "required": [
+        "array1",
+        "array2",
+        "enum1",
+        "enum2",
+        "literal1",
+        "literal2",
+        "literal4",
+        "literal5",
+        "mix1",
+        "mix2",
+        "object1",
+        "object2",
+        "object3",
+        "object4",
+        "object5",
+        "primitive1",
+        "primitive2",
+        "primitive3",
+        "primitive4",
+        "primitive5",
+        "primitive6"
+      ],
+      "type": "object"
+    },
+    "PublicEnum": {
+      "enum": [0, 1],
+      "type": "number"
+    },
+    "PublicGeneric<\"abc\">": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": ["abc"],
+          "type": "string"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<(number&string)>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "allOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<(number|string)>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": [
+            "number",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<123>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [123],
+          "type": "number"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<PublicEnum>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/PublicEnum"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<PublicInterface>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/PublicInterface"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<PublicType>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/PublicType"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<[1,\"a\",true,null]>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "additionalItems": {
+            "enum": [
+              1,
+              "a",
+              true,
+              null
+            ],
+            "type": [
+              "number",
+              "string",
+              "boolean",
+              "null"
+            ]
+          },
+          "items": [
+            {
+              "enum": [1],
+              "type": "number"
+            },
+            {
+              "enum": ["a"],
+              "type": "string"
+            },
+            {
+              "enum": [true],
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "minItems": 4,
+          "type": "array"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<alias-154>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "additionalProperties": false,
+          "properties": {
+            "typ": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "typ"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<any>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<boolean>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<enum-241>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [
+            0,
+            1
+          ],
+          "type": "number"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<false>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [
+            false
+          ],
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<interface-51>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "additionalProperties": false,
+          "properties": {
+            "int": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "int"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<null>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<number>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<string>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<string[]>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<structure-830>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "additionalProperties": false,
+          "properties": {
+            "structure": {
+            }
+          },
+          "required": [
+            "structure"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<true>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [true],
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "field"
+      ],
+      "type": "object"
+    },
+    "PublicGeneric<undefined>": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "not": {
+          }
+        }
+      },
+      "type": "object"
+    },
+    "PublicInterface": {
+      "additionalProperties": false,
+      "properties": {
+        "int": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "int"
+      ],
+      "type": "object"
+    },
+    "PublicType": {
+      "additionalProperties": false,
+      "properties": {
+        "typ": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "typ"
+      ],
+      "type": "object"
+    }
+  }
+}

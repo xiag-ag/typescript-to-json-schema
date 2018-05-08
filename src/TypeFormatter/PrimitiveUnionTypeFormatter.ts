@@ -13,7 +13,11 @@ import { NullType } from "../Type/NullType";
 
 export class PrimitiveUnionTypeFormatter implements SubTypeFormatter {
     public supportsType(type: UnionType): boolean {
-        return type instanceof UnionType && this.isPrimitiveUnion(type);
+        return (
+            type instanceof UnionType &&
+            type.getTypes().length > 0 &&
+            this.isPrimitiveUnion(type)
+        );
     }
     public getDefinition(type: UnionType): Definition {
         return {

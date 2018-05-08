@@ -13,6 +13,9 @@
         },
         "c": {
           "type": "string"
+        },
+        "d": {
+          "not": {}
         }
       },
       "required": [

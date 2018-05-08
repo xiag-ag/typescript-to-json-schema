@@ -63,11 +63,15 @@ describe("valid-data", () => {
     assertSchema("enums-initialized", "Enum");
     assertSchema("enums-compute", "Enum");
     assertSchema("enums-mixed", "Enum");
+    assertSchema("enums-complex", "Enum");
     assertSchema("enums-member", "MyObject");
 
     assertSchema("string-literals", "MyObject");
     assertSchema("string-literals-inline", "MyObject");
     assertSchema("string-literals-null", "MyObject");
+
+    assertSchema("literals-number", "MyObject");
+    assertSchema("literals-boolean", "MyObject");
 
     assertSchema("namespace-deep-1", "RootNamespace.Def");
     assertSchema("namespace-deep-2", "RootNamespace.SubNamespace.HelperA");
@@ -81,7 +85,9 @@ describe("valid-data", () => {
     assertSchema("type-aliases-object", "MyAlias");
     assertSchema("type-aliases-mixed", "MyObject");
     assertSchema("type-aliases-union", "MyUnion");
-    assertSchema("type-aliases-tuple", "MyTuple");
+    assertSchema("type-aliases-tuple-1", "MyTuple");
+    assertSchema("type-aliases-tuple-2", "MyTuple");
+    assertSchema("type-aliases-tuple-3", "MyTuple");
     assertSchema("type-aliases-anonymous", "MyObject");
     assertSchema("type-aliases-local-namespace", "MyObject");
     assertSchema("type-aliases-recursive-anonymous", "MyAlias");
@@ -91,6 +97,7 @@ describe("valid-data", () => {
     assertSchema("type-primitives", "MyObject");
     assertSchema("type-union", "TypeUnion");
     assertSchema("type-union-tagged", "Shape");
+    assertSchema("type-union-primitive", "MyObject");
     assertSchema("type-intersection", "MyObject");
     assertSchema("type-intersection-additional-props", "MyObject");
 
@@ -102,6 +109,8 @@ describe("valid-data", () => {
     assertSchema("type-indexed-access-object-2", "MyType");
     assertSchema("type-keyof-tuple", "MyType");
     assertSchema("type-keyof-object", "MyType");
+    assertSchema("type-keyof-union", "MyType");
+    assertSchema("type-keyof-primitive", "MyType");
     assertSchema("type-mapped-simple", "MyObject");
     assertSchema("type-mapped-index", "MyObject");
     assertSchema("type-mapped-literal", "MyObject");
@@ -115,6 +124,7 @@ describe("valid-data", () => {
     assertSchema("generic-anonymous", "MyObject");
     assertSchema("generic-recursive", "MyObject");
     assertSchema("generic-hell", "MyObject");
+    assertSchema("generic-names", "MyObject");
 
     assertSchema("nullable-null", "MyObject");
 

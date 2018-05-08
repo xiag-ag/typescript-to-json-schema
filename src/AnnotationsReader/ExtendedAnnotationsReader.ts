@@ -19,7 +19,7 @@ export class ExtendedAnnotationsReader extends BasicAnnotationsReader {
             return undefined;
         }
 
-        const comments = symbol.getDocumentationComment();
+        const comments = symbol.getDocumentationComment(undefined);
         if (!comments || !comments.length) {
             return undefined;
         }

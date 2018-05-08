@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/typescript-to-json-schema.svg)](https://www.npmjs.com/package/typescript-to-json-schema)
 [![Build Status](https://travis-ci.org/xiag-ag/typescript-to-json-schema.svg?branch=master)](https://travis-ci.org/xiag-ag/typescript-to-json-schema)
+[![Coverage Status](https://coveralls.io/repos/github/xiag-ag/typescript-to-json-schema/badge.svg?branch=master)](https://coveralls.io/github/xiag-ag/typescript-to-json-schema?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Inspired by [`YousefED/typescript-json-schema`](https://github.com/YousefED/typescript-json-schema). Here's the differences list:

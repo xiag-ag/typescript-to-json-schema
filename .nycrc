@@ -11,7 +11,8 @@
   ],
   "reporter": [
     "text-summary",
-    "html"
+    "html",
+    "lcov"
   ],
   "extension": [
     ".ts"

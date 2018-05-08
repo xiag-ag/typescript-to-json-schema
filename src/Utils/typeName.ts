@@ -3,15 +3,23 @@ import { RawType, RawTypeName } from "../Schema/RawType";
 export function typeName(value: RawType): RawTypeName {
     if (value === null) {
         return "null";
-    } else if (Array.isArray(value)) {
-        return "array";
     }
 
     const type = typeof value;
-    return (
+    if (
         type === "string" ||
         type === "number" ||
-        type === "boolean" ||
-        type === "object"
-    ) ? type : "any";
+        type === "boolean"
+    ) {
+        return type;
+    }
+
+    /* istanbul ignore next */
+    if (Array.isArray(value)) {
+        return "array";
+    } else if (type === "object") {
+        return "object";
+    } else {
+        return "any";
+    }
 }

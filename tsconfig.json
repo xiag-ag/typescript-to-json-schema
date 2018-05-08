@@ -14,7 +14,7 @@
         "suppressImplicitAnyIndexErrors": false,
         "strictNullChecks": true,
         "preserveConstEnums": true,
-        "removeComments": true,
+        "removeComments": false,
         "noLib": false,
         "sourceMap": true,
         "pretty": true,

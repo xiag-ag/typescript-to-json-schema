@@ -10,7 +10,6 @@ import { assertDefined, assertInstanceOf } from "../Utils/assert";
 
 export class MappedTypeNodeParser implements SubNodeParser {
     public constructor(
-        private typeChecker: ts.TypeChecker,
         private childNodeParser: NodeParser,
     ) {
     }
@@ -48,10 +47,10 @@ export class MappedTypeNodeParser implements SubNodeParser {
                 keyType,
                 LiteralType,
                 `Mapped type key should be instance of LiteralType ("${keyType.getId()}" given)`,
-            ).getValue() as string;
+            ).getValue();
 
             const objectProperty = new ObjectProperty(
-                propertyName,
+                propertyName.toString(),
                 propertyType,
                 !node.questionToken,
             );

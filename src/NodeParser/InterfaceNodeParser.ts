@@ -45,8 +45,8 @@ export class InterfaceNodeParser implements SubNodeParser {
 
     private getProperties(node: ts.InterfaceDeclaration, context: Context): ObjectProperty[] {
         return node.members
-            .filter((property) => property.kind === ts.SyntaxKind.PropertySignature)
-            .reduce((result: ObjectProperty[], propertyNode: ts.PropertySignature) => {
+            .filter(ts.isPropertySignature)
+            .reduce((result: ObjectProperty[], propertyNode) => {
                 const propertyType = assertDefined(propertyNode.type);
                 const propertySymbol = assertDefined(symbolAtNode(propertyNode));
 
@@ -61,13 +61,12 @@ export class InterfaceNodeParser implements SubNodeParser {
             }, []);
     }
     private getAdditionalProperties(node: ts.InterfaceDeclaration, context: Context): BaseType | undefined {
-        const property = node.members.find((it) => it.kind === ts.SyntaxKind.IndexSignature);
-        if (!property) {
+        const indexSignature = node.members.find(ts.isIndexSignatureDeclaration);
+        if (!indexSignature) {
             return undefined;
         }
 
-        const signature = property as ts.IndexSignatureDeclaration;
-        const indexType = assertDefined(signature.type);
+        const indexType = assertDefined(indexSignature.type);
         return this.childNodeParser.createType(indexType, context);
     }
 

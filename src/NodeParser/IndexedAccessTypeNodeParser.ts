@@ -8,7 +8,6 @@ import { assertDefined, assertInstanceOf } from "../Utils/assert";
 
 export class IndexedAccessTypeNodeParser implements SubNodeParser {
     public constructor(
-        private typeChecker: ts.TypeChecker,
         private childNodeParser: NodeParser,
     ) {
     }

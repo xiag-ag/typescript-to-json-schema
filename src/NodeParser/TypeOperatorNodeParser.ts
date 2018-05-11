@@ -3,12 +3,10 @@ import { Context, NodeParser } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { UnionType } from "../Type/UnionType";
-import { LiteralType } from "../Type/LiteralType";
 import { getTypeKeys } from "../Utils/typeKeys";
 
 export class TypeOperatorNodeParser implements SubNodeParser {
     public constructor(
-        private typeChecker: ts.TypeChecker,
         private childNodeParser: NodeParser,
     ) {
     }

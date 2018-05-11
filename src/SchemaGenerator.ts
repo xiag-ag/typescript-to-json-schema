@@ -79,8 +79,8 @@ export class SchemaGenerator {
     }
     private getRootChildDefinitions(rootType: BaseType): StringMap<Definition> {
         return this.typeFormatter.getChildren(rootType)
-            .filter((child) => child instanceof DefinitionType)
-            .reduce((result: StringMap<Definition>, child: DefinitionType) => ({
+            .filter((child): child is DefinitionType => child instanceof DefinitionType)
+            .reduce((result: StringMap<Definition>, child) => ({
                 ...result,
                 [child.getId()]: this.typeFormatter.getDefinition(child.getType()),
             }), {});

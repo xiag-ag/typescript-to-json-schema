@@ -1,14 +1,15 @@
 import { BaseType } from "./BaseType";
+import { assertDefined } from "../Utils/assert";
 
 export class ReferenceType extends BaseType {
-    private type: BaseType;
+    private type: BaseType | undefined;
 
     public getId(): string {
-        return this.type.getId();
+        return assertDefined(this.type, "You must call setType() method before using getId() method").getId();
     }
 
     public getType(): BaseType {
-        return this.type;
+        return assertDefined(this.type, "You must call setType() method before using getType() method");
     }
     public setType(type: BaseType): void {
         this.type = type;

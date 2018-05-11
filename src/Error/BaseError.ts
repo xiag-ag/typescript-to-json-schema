@@ -1,5 +1,5 @@
 export abstract class BaseError implements Error {
-    public readonly stack: string;
+    public readonly stack!: string;
 
     protected constructor() {
         Error.captureStackTrace(this, this.constructor);

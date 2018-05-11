@@ -10,7 +10,6 @@ import { assertDefined, assertInstanceOf } from "../Utils/assert";
 
 export class MappedTypeNodeParser implements SubNodeParser {
     public constructor(
-        private typeChecker: ts.TypeChecker,
         private childNodeParser: NodeParser,
     ) {
     }

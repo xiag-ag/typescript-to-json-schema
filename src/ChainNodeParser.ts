@@ -6,7 +6,6 @@ import { UnknownNodeError } from "./Error/UnknownNodeError";
 
 export class ChainNodeParser implements SubNodeParser {
     public constructor(
-        private typeChecker: ts.TypeChecker,
         private nodeParsers: SubNodeParser[],
     ) {
     }

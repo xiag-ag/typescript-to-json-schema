@@ -3,7 +3,7 @@ import { Context, NodeParser } from "../NodeParser";
 import { SubNodeParser } from "../SubNodeParser";
 import { BaseType } from "../Type/BaseType";
 import { LogicError } from "../Error/LogicError";
-import { assertDefined, assertInstanceOf } from "../Utils/assert";
+import { assertDefined } from "../Utils/assert";
 
 export class TypeofNodeParser implements SubNodeParser {
     public constructor(

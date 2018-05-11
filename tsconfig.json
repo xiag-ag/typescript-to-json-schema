@@ -11,6 +11,8 @@
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "noStrictGenericChecks": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
         "suppressExcessPropertyErrors": false,
         "suppressImplicitAnyIndexErrors": false,
         "strict": true,

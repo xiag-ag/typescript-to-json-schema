@@ -49,9 +49,10 @@ function createProgramFromGlob(fileGlob: string): ts.Program {
 }
 
 export function createProgram(config: Config): ts.Program {
-    const program = path.extname(config.path) === ".json" ?
-        createProgramFromConfig(config.path) :
-        createProgramFromGlob(config.path);
+    const configFile = path.resolve(config.path);
+    const program = path.extname(configFile) === ".json"
+        ? createProgramFromConfig(configFile)
+        : createProgramFromGlob(configFile);
 
     const diagnostics = ts.getPreEmitDiagnostics(program);
     if (diagnostics.length) {

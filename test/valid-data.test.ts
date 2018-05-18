@@ -2,11 +2,7 @@ import * as Ajv from "ajv";
 import { assert } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { createFormatter } from "../factory/formatter";
-import { createParser } from "../factory/parser";
-import { createProgram } from "../factory/program";
-import { Config } from "../src/Config";
-import { SchemaGenerator } from "../src/SchemaGenerator";
+import { createGenerator } from "../factory/generator";
 
 const validator = new Ajv();
 const metaSchema = require("ajv/lib/refs/json-schema-draft-06.json");
@@ -15,7 +11,7 @@ validator.addMetaSchema(metaSchema);
 function assertSchema(name: string, type: string): void {
     it(name, () => {
         const basePath = "test/valid-data";
-        const config: Config = {
+        const generator = createGenerator({
             path: resolve(`${basePath}/${name}/*.ts`),
             type: type,
 
@@ -23,14 +19,7 @@ function assertSchema(name: string, type: string): void {
             topRef: true,
             jsDoc: "none",
             sortProps: true,
-        };
-
-        const program = createProgram(config);
-        const generator = new SchemaGenerator(
-            program,
-            createParser(program, config),
-            createFormatter(config),
-        );
+        });
 
         const expected = JSON.parse(readFileSync(resolve(`${basePath}/${name}/schema.json`), "utf8"));
         const actual = JSON.parse(JSON.stringify(generator.createSchema(type)));

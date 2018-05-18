@@ -1,16 +1,15 @@
-export interface PartialConfig {
+export interface OptionalConfig {
     expose: "all" | "none" | "export";
     topRef: boolean;
     jsDoc: "none" | "extended" | "basic";
     sortProps: boolean;
 }
-
-export interface Config extends PartialConfig {
+export interface ProgramConfig extends OptionalConfig {
     path: string;
     type: string;
 }
 
-export const DEFAULT_CONFIG: PartialConfig = {
+export const DEFAULT_CONFIG: OptionalConfig = {
     expose: "export",
     topRef: true,
     jsDoc: "extended",

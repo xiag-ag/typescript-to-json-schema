@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import * as glob from "glob";
 import * as path from "path";
 
-import { Config } from "../src/Config";
+import { ProgramConfig } from "./config";
 import { DiagnosticError } from "../src/Error/DiagnosticError";
 import { LogicError } from "../src/Error/LogicError";
 
@@ -48,7 +48,7 @@ function createProgramFromGlob(fileGlob: string): ts.Program {
     });
 }
 
-export function createProgram(config: Config): ts.Program {
+export function createProgram(config: ProgramConfig): ts.Program {
     const configFile = path.resolve(config.path);
     const program = path.extname(configFile) === ".json"
         ? createProgramFromConfig(configFile)

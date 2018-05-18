@@ -6,8 +6,6 @@ export * from "./src/Error/UnknownNodeError";
 export * from "./src/Error/UnknownTypeError";
 export * from "./src/Error/AssertionError";
 
-export * from "./src/Config";
-
 export * from "./src/Utils/StringMap";
 export * from "./src/Utils/uniqueArray";
 export * from "./src/Utils/formatError";

@@ -1,11 +1,10 @@
 import * as commander from "commander";
 import * as stringify from "json-stable-stringify";
 
+import { DEFAULT_CONFIG, ProgramConfig } from "./factory/config";
 import { createGenerator } from "./factory/generator";
-import { formatError } from "./src/Utils/formatError";
-
-import { Config, DEFAULT_CONFIG } from "./src/Config";
 import { BaseError } from "./src/Error/BaseError";
+import { formatError } from "./src/Utils/formatError";
 
 const args: any = commander
     .option("-p, --path <path>", "Typescript path")
@@ -36,14 +35,14 @@ const args: any = commander
     )
     .parse(process.argv);
 
-const config: Config = {
+const programConfig: ProgramConfig = {
     ...DEFAULT_CONFIG,
     ...args,
 };
 
 try {
-    const schema = createGenerator(config).createSchema(args.type);
-    process.stdout.write(config.sortProps ?
+    const schema = createGenerator(programConfig).createSchema(args.type);
+    process.stdout.write(programConfig.sortProps ?
         stringify(schema, {space: 2}) :
         JSON.stringify(schema, null, 2));
 } catch (error) {

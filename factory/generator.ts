@@ -1,11 +1,11 @@
-import { Config } from "../src/Config";
+import { ProgramConfig } from "./config";
 import { SchemaGenerator } from "../src/SchemaGenerator";
 
 import { createProgram } from "./program";
 import { createParser } from "./parser";
 import { createFormatter } from "./formatter";
 
-export function createGenerator(config: Config): SchemaGenerator {
+export function createGenerator(config: ProgramConfig): SchemaGenerator {
     const program = createProgram(config);
     const parser = createParser(program, config);
     const formatter = createFormatter(config);

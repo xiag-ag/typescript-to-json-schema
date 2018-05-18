@@ -2,36 +2,25 @@ import * as Ajv from "ajv";
 import { assert } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-
-import { createFormatter } from "../factory/formatter";
-import { createParser } from "../factory/parser";
-import { createProgram } from "../factory/program";
-import { Config, DEFAULT_CONFIG, PartialConfig } from "../src/Config";
-import { SchemaGenerator } from "../src/SchemaGenerator";
+import { DEFAULT_CONFIG, OptionalConfig } from "../factory/config";
+import { createGenerator } from "../factory/generator";
 
 const validator = new Ajv();
 const metaSchema = require("ajv/lib/refs/json-schema-draft-06.json");
 validator.addMetaSchema(metaSchema);
 
-type TestConfig = Partial<PartialConfig> & {type: string};
+type TestConfig = Partial<OptionalConfig> & {type: string};
 function assertSchema(name: string, testConfig: TestConfig): void {
     it(name, () => {
         const basePath = "test/config";
-        const config: Config = {
+        const generator = createGenerator({
             ... DEFAULT_CONFIG,
             ...testConfig,
             path: resolve(`${basePath}/${name}/*.ts`),
-        };
-
-        const program = createProgram(config);
-        const generator = new SchemaGenerator(
-            program,
-            createParser(program, config),
-            createFormatter(config),
-        );
+        });
 
         const expected = JSON.parse(readFileSync(resolve(`${basePath}/${name}/schema.json`), "utf8"));
-        const actual = JSON.parse(JSON.stringify(generator.createSchema(config.type)));
+        const actual = JSON.parse(JSON.stringify(generator.createSchema(testConfig.type)));
 
         assert.isObject(actual);
         assert.deepEqual(actual, expected);

@@ -1,10 +1,13 @@
+import * as path from "path";
+import * as ts from "typescript";
 import * as commander from "commander";
 import * as stringify from "json-stable-stringify";
 
 import { DEFAULT_CONFIG, ProgramConfig } from "./factory/config";
 import { createGenerator } from "./factory/generator";
 import { BaseError } from "./src/Error/BaseError";
-import { formatError } from "./src/Utils/formatError";
+import { UnknownNodeError } from "./src/Error/UnknownNodeError";
+import { DiagnosticError } from "./src/Error/DiagnosticError";
 
 const args: any = commander
     .option("-p, --path <path>", "Typescript path")
@@ -52,4 +55,29 @@ try {
     } else {
         throw error;
     }
+}
+
+function getNodeLocation(node: ts.Node): [string, number, number] {
+    const sourceFile = node.getSourceFile();
+    const lineAndChar = ts.getLineAndCharacterOfPosition(sourceFile, node.getStart(sourceFile));
+    return [sourceFile.fileName, lineAndChar.line + 1, lineAndChar.character];
+}
+function formatError(error: BaseError): string {
+    if (error instanceof DiagnosticError) {
+        const rootDir = process.cwd().split(path.sep)[0] || "/";
+        return ts.formatDiagnostics(error.getDiagnostics(), {
+            getCanonicalFileName: (fileName: string) => fileName,
+            getCurrentDirectory: () => rootDir,
+            getNewLine: () => "\n",
+        });
+    } else if (error instanceof UnknownNodeError) {
+        const unknownNode = error.getReference() || error.getNode();
+        const nodeFullText = unknownNode.getFullText().trim().split("\n")[0].trim();
+        const [sourceFile, lineNumber, charPos] = getNodeLocation(unknownNode);
+
+        return `${error.name}: Unknown node "${nodeFullText}" (ts.SyntaxKind = ${error.getNode().kind}) ` +
+            `at ${sourceFile}(${lineNumber},${charPos})\n`;
+    }
+
+    return `${error.name}: ${error.message}\n`;
 }

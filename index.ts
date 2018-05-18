@@ -8,7 +8,6 @@ export * from "./src/Error/AssertionError";
 
 export * from "./src/Utils/StringMap";
 export * from "./src/Utils/uniqueArray";
-export * from "./src/Utils/formatError";
 export * from "./src/Utils/derefType";
 export * from "./src/Utils/symbolAtNode";
 export * from "./src/Utils/assert";

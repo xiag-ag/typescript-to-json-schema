@@ -16,10 +16,11 @@
     "C.C": {
       "allOf": [
         {
-          "additionalProperties": false,
+          "additionalProperties": true,
           "type": "object"
         },
         {
+          "additionalProperties": true,
           "$ref": "#/definitions/C.CC"
         }
       ]
@@ -51,10 +52,11 @@
     "MyObject": {
       "allOf": [
         {
-          "additionalProperties": false,
+          "additionalProperties": true,
           "type": "object"
         },
         {
+          "additionalProperties": true,
           "$ref": "#/definitions/D.D"
         }
       ]

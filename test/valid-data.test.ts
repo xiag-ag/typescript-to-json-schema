@@ -41,6 +41,7 @@ describe("valid-data", () => {
     assertSchema("interface-multi", "MyObject");
     assertSchema("interface-recursion", "MyObject");
     assertSchema("interface-extra-props", "MyObject");
+    assertSchema("interface-extends-1", "Example");
 
     assertSchema("structure-private", "MyObject");
     assertSchema("structure-anonymous", "MyObject");

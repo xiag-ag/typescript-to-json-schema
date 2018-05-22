@@ -24,8 +24,14 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
 
         return {
             allOf: [
-                this.getObjectDefinition(type),
-                ...type.getBaseTypes().map((baseType) => this.childTypeFormatter.getDefinition(baseType)),
+                {
+                    ...this.getObjectDefinition(type),
+                    additionalProperties: true,
+                },
+                ...type.getBaseTypes().map((baseType) => ({
+                    ...this.childTypeFormatter.getDefinition(baseType),
+                    additionalProperties: true,
+                })),
             ],
         };
     }

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/Example",
+  "definitions": {
+    "Example": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "exampleProperty": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "exampleProperty"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "baseExampleProperty": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "baseExampleProperty"
+          ],
+          "additionalProperties": true
+        }
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "exampleProperty",
+          "baseExampleProperty"
+        ]
+      }
+    }
+  }
+}

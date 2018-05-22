@@ -23,7 +23,7 @@
     "MyObject": {
       "allOf": [
         {
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "bar": {
               "type": "number"
@@ -40,9 +40,17 @@
           "type": "object"
         },
         {
+          "additionalProperties": true,
           "$ref": "#/definitions/Base"
         }
-      ]
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "foo",
+          "bar"
+        ]
+      }
     }
   }
 }

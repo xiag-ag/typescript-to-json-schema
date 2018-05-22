@@ -125,7 +125,7 @@
         "MyObject": {
             "allOf": [
                 {
-                    "additionalProperties": false,
+                    "additionalProperties": true,
                     "properties": {
                         "someAlias": {
                             "$ref": "#/definitions/SomeAlias<\"alias\">"
@@ -141,12 +141,23 @@
                     "type": "object"
                 },
                 {
+                    "additionalProperties": true,
                     "$ref": "#/definitions/GenericC<GenericC<GenericC<GenericA<string>>>>"
                 },
                 {
+                    "additionalProperties": true,
                     "$ref": "#/definitions/B"
                 }
-            ]
+            ],
+            "propertyNames": {
+                "type": "string",
+                "enum": [
+                    "someGeneric",
+                    "someAlias",
+                    "c",
+                    "b"
+                ]
+            }
         },
         "SomeAlias<\"alias\">": {
             "$ref": "#/definitions/SomeGeneric<\"alias\",\"alias\">"

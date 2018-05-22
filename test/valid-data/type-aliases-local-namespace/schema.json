@@ -16,13 +16,18 @@
     "C.C": {
       "allOf": [
         {
-          "additionalProperties": false,
+          "additionalProperties": true,
           "type": "object"
         },
         {
+          "additionalProperties": true,
           "$ref": "#/definitions/C.CC"
         }
-      ]
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": ["c"]
+      }
     },
     "C.CC": {
       "additionalProperties": false,
@@ -51,13 +56,18 @@
     "MyObject": {
       "allOf": [
         {
-          "additionalProperties": false,
+          "additionalProperties": true,
           "type": "object"
         },
         {
+          "additionalProperties": true,
           "$ref": "#/definitions/D.D"
         }
-      ]
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": ["d"]
+      }
     }
   }
 }

@@ -43,7 +43,14 @@
           "additionalProperties": true,
           "$ref": "#/definitions/Base"
         }
-      ]
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "foo",
+          "bar"
+        ]
+      }
     }
   }
 }

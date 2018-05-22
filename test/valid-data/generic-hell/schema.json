@@ -148,7 +148,16 @@
                     "additionalProperties": true,
                     "$ref": "#/definitions/B"
                 }
-            ]
+            ],
+            "propertyNames": {
+                "type": "string",
+                "enum": [
+                    "someGeneric",
+                    "someAlias",
+                    "c",
+                    "b"
+                ]
+            }
         },
         "SomeAlias<\"alias\">": {
             "$ref": "#/definitions/SomeGeneric<\"alias\",\"alias\">"

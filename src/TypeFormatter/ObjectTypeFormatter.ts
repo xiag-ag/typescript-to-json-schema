@@ -7,6 +7,9 @@ import { Definition } from "../Schema/Definition";
 import { StringMap } from "../Utils/StringMap";
 import { UnionType } from "../Type/UnionType";
 import { UndefinedType } from "../Type/UndefinedType";
+import { assertInstanceOf } from "../Utils/assert";
+import { derefType } from "../Utils/derefType";
+import { uniqueArray } from "../Utils/uniqueArray";
 
 export class ObjectTypeFormatter implements SubTypeFormatter {
     public constructor(
@@ -22,6 +25,8 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
             return this.getObjectDefinition(type);
         }
 
+        const propertyNames = this.getPropertyNames(type);
+
         return {
             allOf: [
                 {
@@ -33,6 +38,12 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
                     additionalProperties: true,
                 })),
             ],
+            ...!propertyNames.length ? {} : {
+                propertyNames: {
+                    type: "string",
+                    enum: propertyNames,
+                },
+            },
         };
     }
     public getChildren(type: ObjectType): BaseType[] {
@@ -108,5 +119,35 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
             requiredTypes.length === 1 ? requiredTypes[0] : new UnionType(requiredTypes),
             false,
         );
+    }
+
+    private getPropertyNames(type: ObjectType): string[] {
+        if (this.hasAdditionalProperties(type)) {
+            return [];
+        }
+
+        const parents = type.getBaseTypes().map((baseType) => assertInstanceOf(
+            derefType(baseType),
+            ObjectType,
+            `Object parent type should be instance of UnionType ("${baseType.getId()}" given)`,
+        ));
+
+        return uniqueArray(
+            parents.reduce((result, parent) => [
+                ...result,
+                ...this.getPropertyNames(parent),
+            ], type.getProperties().map((it) => it.getName())),
+        );
+    }
+    private hasAdditionalProperties(type: ObjectType): boolean {
+        if (type.getAdditionalProperties() !== undefined) {
+            return true;
+        }
+
+        return type.getBaseTypes().map((baseType) => assertInstanceOf(
+            derefType(baseType),
+            ObjectType,
+            `Object parent type should be instance of UnionType ("${baseType.getId()}" given)`,
+        )).some((baseType) => this.hasAdditionalProperties(baseType));
     }
 }

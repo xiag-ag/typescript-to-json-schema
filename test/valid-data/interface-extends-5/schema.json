@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/MyObject",
+  "definitions": {
+    "MyObject": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "objectField": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "objectField"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "$ref": "#/definitions/MyParent1",
+          "additionalProperties": true
+        },
+        {
+          "$ref": "#/definitions/MyParent2",
+          "additionalProperties": true
+        }
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "objectField",
+          "parentField1",
+          "parentField2"
+        ]
+      }
+    },
+    "MyParent1": {
+      "type": "object",
+      "properties": {
+        "parentField1": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "parentField1"
+      ],
+      "additionalProperties": false
+    },
+    "MyParent2": {
+      "type": "object",
+      "properties": {
+        "parentField2": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "parentField2"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

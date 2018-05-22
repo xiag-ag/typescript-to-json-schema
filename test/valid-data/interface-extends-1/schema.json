@@ -28,7 +28,14 @@
           ],
           "additionalProperties": true
         }
-      ]
+      ],
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "exampleProperty",
+          "baseExampleProperty"
+        ]
+      }
     }
   }
 }

@@ -7,6 +7,7 @@ import { Definition } from "../Schema/Definition";
 import { StringMap } from "../Utils/StringMap";
 import { UnionType } from "../Type/UnionType";
 import { UndefinedType } from "../Type/UndefinedType";
+import { AnnotatedType } from "../Type/AnnotatedType";
 
 export class ObjectTypeFormatter implements SubTypeFormatter {
     public constructor(
@@ -84,7 +85,18 @@ export class ObjectTypeFormatter implements SubTypeFormatter {
 
     private prepareObjectProperty(property: ObjectProperty): ObjectProperty {
         const propType = property.getType();
-        if (propType instanceof UndefinedType) {
+        if (propType instanceof AnnotatedType) {
+            const updatedProperty = this.prepareObjectProperty(new ObjectProperty(
+                property.getName(),
+                propType.getType(),
+                property.isRequired(),
+            ));
+            return new ObjectProperty(
+                updatedProperty.getName(),
+                new AnnotatedType(updatedProperty.getType(), propType.getAnnotations()),
+                updatedProperty.isRequired(),
+            );
+        } else if (propType instanceof UndefinedType) {
             return new ObjectProperty(property.getName(), new UndefinedType(), false);
         } else if (!(propType instanceof UnionType)) {
             return property;
